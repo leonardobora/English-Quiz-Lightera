@@ -57,7 +57,12 @@
                 <div id="progressIndicator" class="text-sm font-medium text-slate-600 bg-slate-100 px-3 py-1 rounded-full"></div>
             </div>
             <div id="questionArea" class="mt-4">
-                <p id="questionText" class="mb-4"></p>
+                <div class="question-container">
+                    <p id="questionText" class="mb-4"></p>
+                    <button id="playAudioButton" class="audio-btn" title="Ouvir pergunta">
+                        🔊
+                    </button>
+                </div>
                 <div id="optionsArea" class="space-y-2">
                 </div>
             </div>
@@ -75,13 +80,25 @@
             <!-- Feedback Section -->
             <div id="feedbackSection" class="my-6 p-4 bg-slate-50 rounded-lg">
                 <h3 class="text-lg font-semibold mb-3">O que você achou do quiz?</h3>
-                <div class="flex justify-center gap-4">
+                <div class="flex justify-center gap-4 mb-4">
                     <button id="thumbsUp" class="feedback-btn text-4xl p-3 rounded-lg border-2 border-transparent hover:border-green-400 hover:bg-green-50 transition-all">
                         👍
                     </button>
                     <button id="thumbsDown" class="feedback-btn text-4xl p-3 rounded-lg border-2 border-transparent hover:border-red-400 hover:bg-red-50 transition-all">
                         👎
                     </button>
+                </div>
+                <div class="written-feedback-section">
+                    <label for="writtenFeedback" class="block text-sm font-medium text-slate-700 mb-2">
+                        Deixe seu comentário (opcional):
+                    </label>
+                    <textarea 
+                        id="writtenFeedback" 
+                        name="writtenFeedback" 
+                        rows="3" 
+                        placeholder="Compartilhe sua experiência, sugestões ou comentários sobre o quiz..."
+                        class="w-full p-3 border border-slate-300 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 resize-none"
+                    ></textarea>
                 </div>
                 <p id="feedbackMessage" class="text-sm text-slate-600 mt-2 text-center hidden"></p>
             </div>

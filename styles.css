@@ -225,6 +225,52 @@ button:active {
     background-color: rgba(59, 130, 246, 0.1) !important;
 }
 
+/* Audio button styling */
+.question-container {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.audio-btn {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: none;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    font-size: 1.5rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+    flex-shrink: 0;
+}
+
+.audio-btn:hover {
+    transform: scale(1.1);
+    box-shadow: 0 6px 16px rgba(102, 126, 234, 0.4);
+}
+
+.audio-btn:active {
+    transform: scale(0.95);
+}
+
+.audio-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* Written feedback styling */
+.written-feedback-section textarea {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.9rem;
+    line-height: 1.5;
+}
+
 /* Leaderboard styling */
 #leaderboard {
     list-style-type: none;

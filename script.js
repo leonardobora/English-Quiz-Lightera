@@ -30,6 +30,8 @@ const closeNoticeButton = document.getElementById('closeNotice');
 const thumbsUpButton = document.getElementById('thumbsUp');
 const thumbsDownButton = document.getElementById('thumbsDown');
 const feedbackMessage = document.getElementById('feedbackMessage');
+const writtenFeedback = document.getElementById('writtenFeedback');
+const playAudioButton = document.getElementById('playAudioButton');
 
 // Variáveis do estado do jogo
 let currentStudentName = '';
@@ -37,6 +39,7 @@ let currentStudentEmoji = '';
 let currentScore = 0;
 let currentQuestionIndex = 0;
 let questions = [];
+let currentAudio = null;
 const TOTAL_QUESTIONS_TO_ASK = 10;
 
 // --- Perguntas ---
@@ -305,6 +308,54 @@ function createConfetti() {
     setTimeout(() => {
         confettiContainer.innerHTML = '';
     }, 4000);
+}
+
+// --- Text-to-Speech Function ---
+async function generateSpeech(text) {
+    try {
+        playAudioButton.disabled = true;
+        playAudioButton.textContent = '⏳';
+        
+        const response = await fetch('/api/tts', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ text: text })
+        });
+        
+        if (!response.ok) {
+            throw new Error('Failed to generate audio');
+        }
+        
+        const audioBlob = await response.blob();
+        const audioUrl = URL.createObjectURL(audioBlob);
+        
+        if (currentAudio) {
+            currentAudio.pause();
+            URL.revokeObjectURL(currentAudio.src);
+        }
+        
+        currentAudio = new Audio(audioUrl);
+        currentAudio.play();
+        
+        currentAudio.onended = () => {
+            playAudioButton.disabled = false;
+            playAudioButton.textContent = '🔊';
+        };
+        
+    } catch (error) {
+        console.error('Error generating speech:', error);
+        playAudioButton.disabled = false;
+        playAudioButton.textContent = '🔊';
+        // Fallback to browser's speech synthesis if available
+        if ('speechSynthesis' in window) {
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = 'en-US';
+            utterance.rate = 0.8;
+            speechSynthesis.speak(utterance);
+        }
+    }
 }
 
 // --- Event Listeners ---
