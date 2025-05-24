@@ -9,6 +9,16 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+    <!-- ENEM Preparation Notice -->
+    <div id="enemNotice" class="enem-notice">
+        <div class="enem-notice-content">
+            <button id="closeNotice" class="close-notice">&times;</button>
+            <h3>📚 Preparação ENEM e Vestibulares</h3>
+            <p>Lembre-se: a preparação para o ENEM e vestibulares nacionais é fundamental para seu futuro acadêmico! A partir do segundo semestre, focaremos mais na preparação e compreensão específica do que é pedido nesses exames importantes.</p>
+            <p><strong>Continue estudando e boa sorte!</strong></p>
+        </div>
+    </div>
+
     <div id="appContainer" class="quiz-container">
         <div id="registrationScreen">
             <h1>Teacher Leo's Interactive Quiz</h1>
@@ -54,6 +64,21 @@
             <h1>Resultados</h1>
             <p id="finalMessage" class="text-lg mb-4"></p>
             <div id="trophyContainer" class="my-4"></div>
+            
+            <!-- Feedback Section -->
+            <div id="feedbackSection" class="my-6 p-4 bg-slate-50 rounded-lg">
+                <h3 class="text-lg font-semibold mb-3">O que você achou do quiz?</h3>
+                <div class="flex justify-center gap-4">
+                    <button id="thumbsUp" class="feedback-btn text-4xl p-3 rounded-lg border-2 border-transparent hover:border-green-400 hover:bg-green-50 transition-all">
+                        👍
+                    </button>
+                    <button id="thumbsDown" class="feedback-btn text-4xl p-3 rounded-lg border-2 border-transparent hover:border-red-400 hover:bg-red-50 transition-all">
+                        👎
+                    </button>
+                </div>
+                <p id="feedbackMessage" class="text-sm text-slate-600 mt-2 text-center hidden"></p>
+            </div>
+            
             <h2>Ranking Geral:</h2>
             <ul id="leaderboard" class="mb-6">
             </ul>

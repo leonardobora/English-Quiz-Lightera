@@ -24,6 +24,13 @@ const leaderboardList = document.getElementById('leaderboard');
 const restartButton = document.getElementById('restartButton');
 const clearScoresButton = document.getElementById('clearScoresButton');
 
+// ENEM notice and feedback elements
+const enemNotice = document.getElementById('enemNotice');
+const closeNoticeButton = document.getElementById('closeNotice');
+const thumbsUpButton = document.getElementById('thumbsUp');
+const thumbsDownButton = document.getElementById('thumbsDown');
+const feedbackMessage = document.getElementById('feedbackMessage');
+
 // Variáveis do estado do jogo
 let currentStudentName = '';
 let currentStudentEmoji = '';
@@ -306,6 +313,21 @@ nextButton.addEventListener('click', nextQuestion);
 restartButton.addEventListener('click', restartQuiz);
 clearScoresButton.addEventListener('click', clearScores);
 
+// ENEM notice close button
+closeNoticeButton.addEventListener('click', function() {
+    enemNotice.style.display = 'none';
+    localStorage.setItem('enemNoticeHidden', 'true');
+});
+
+// Feedback buttons
+thumbsUpButton.addEventListener('click', function() {
+    submitFeedback('positive');
+});
+
+thumbsDownButton.addEventListener('click', function() {
+    submitFeedback('negative');
+});
+
 // Emoji selection
 emojiButtons.forEach(button => {
     button.addEventListener('click', function() {
@@ -505,6 +527,13 @@ function restartQuiz() {
     // Remover seleção de emoji
     emojiButtons.forEach(btn => btn.classList.remove('selected'));
     
+    // Reset feedback buttons
+    thumbsUpButton.classList.remove('selected');
+    thumbsDownButton.classList.remove('selected');
+    thumbsUpButton.disabled = false;
+    thumbsDownButton.disabled = false;
+    feedbackMessage.classList.add('hidden');
+    
     // Voltar para tela de registro
     finalScoreScreen.classList.add('hidden');
     registrationScreen.classList.remove('hidden');
@@ -518,6 +547,37 @@ function clearScores() {
         localStorage.removeItem('prismaQuizScores');
         displayLeaderboard();
     }
+}
+
+// --- Feedback Functions ---
+function submitFeedback(type) {
+    // Save feedback to localStorage
+    let feedback = JSON.parse(localStorage.getItem('quizFeedback')) || [];
+    feedback.push({
+        type: type,
+        date: new Date().toLocaleDateString('pt-BR'),
+        student: currentStudentName,
+        emoji: currentStudentEmoji
+    });
+    localStorage.setItem('quizFeedback', JSON.stringify(feedback));
+    
+    // Visual feedback
+    thumbsUpButton.classList.remove('selected');
+    thumbsDownButton.classList.remove('selected');
+    
+    if (type === 'positive') {
+        thumbsUpButton.classList.add('selected');
+        feedbackMessage.textContent = 'Obrigado pelo feedback positivo! 😊';
+    } else {
+        thumbsDownButton.classList.add('selected');
+        feedbackMessage.textContent = 'Obrigado pelo feedback! Vamos melhorar! 💪';
+    }
+    
+    feedbackMessage.classList.remove('hidden');
+    
+    // Disable buttons after feedback
+    thumbsUpButton.disabled = true;
+    thumbsDownButton.disabled = true;
 }
 
 // Inicialização
