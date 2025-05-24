@@ -40,6 +40,7 @@ let currentScore = 0;
 let currentQuestionIndex = 0;
 let questions = [];
 let currentAudio = null;
+let audioCache = new Map(); // Cache for audio files
 const TOTAL_QUESTIONS_TO_ASK = 10;
 
 // --- Perguntas ---
@@ -313,6 +314,19 @@ function createConfetti() {
 // --- Text-to-Speech Function ---
 async function generateSpeech(text) {
     try {
+        // Check if audio is already cached
+        if (audioCache.has(text)) {
+            const cachedAudioUrl = audioCache.get(text);
+            
+            if (currentAudio) {
+                currentAudio.pause();
+            }
+            
+            currentAudio = new Audio(cachedAudioUrl);
+            currentAudio.play();
+            return;
+        }
+        
         playAudioButton.disabled = true;
         playAudioButton.textContent = '⏳';
         
@@ -330,6 +344,9 @@ async function generateSpeech(text) {
         
         const audioBlob = await response.blob();
         const audioUrl = URL.createObjectURL(audioBlob);
+        
+        // Cache the audio URL for future use
+        audioCache.set(text, audioUrl);
         
         if (currentAudio) {
             currentAudio.pause();
@@ -580,6 +597,9 @@ function restartQuiz() {
     currentScore = 0;
     currentQuestionIndex = 0;
     
+    // Clear audio cache to free memory for new quiz
+    clearAudioCache();
+    
     // Limpar input
     studentNameInput.value = '';
     
@@ -601,6 +621,15 @@ function restartQuiz() {
     
     // Esconder mensagem de erro se estiver visível
     nameError.classList.add('hidden');
+}
+
+// Function to clear audio cache and free memory
+function clearAudioCache() {
+    // Revoke all cached audio URLs to free memory
+    for (const [text, audioUrl] of audioCache) {
+        URL.revokeObjectURL(audioUrl);
+    }
+    audioCache.clear();
 }
 
 function clearScores() {
