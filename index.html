@@ -6,6 +6,7 @@
     <title>Teacher Leo's Interactive Quiz</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -21,7 +22,10 @@
 
     <div id="appContainer" class="quiz-container">
         <div id="registrationScreen">
-            <h1>Teacher Leo's Interactive Quiz</h1>
+            <div class="logo-container">
+                <img src="logo.jpeg" alt="Logo Teacher Leo" class="main-logo">
+            </div>
+            <h1 class="main-title">Teacher Leo's Interactive Quiz</h1>
             <p>Bem-vindo! Teste seus conhecimentos de inglês americano conversacional.</p>
             <div>
                 <label for="studentName" class="block text-sm font-medium text-slate-700 sr-only">Seu Nome:</label>
@@ -45,8 +49,11 @@
         </div>
 
         <div id="quizScreen" class="hidden">
-            <div class="flex justify-between items-center mb-4">
-                <h2 id="welcomeMessage" class="text-xl font-semibold"></h2>
+            <div class="quiz-header">
+                <div class="header-left">
+                    <img src="logo.jpeg" alt="Logo Teacher Leo" class="header-logo">
+                    <h2 id="welcomeMessage" class="text-xl font-semibold"></h2>
+                </div>
                 <div id="progressIndicator" class="text-sm font-medium text-slate-600 bg-slate-100 px-3 py-1 rounded-full"></div>
             </div>
             <div id="questionArea" class="mt-4">
