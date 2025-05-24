@@ -370,6 +370,14 @@ closeNoticeButton.addEventListener('click', function() {
     localStorage.setItem('enemNoticeHidden', 'true');
 });
 
+// Audio play button
+playAudioButton.addEventListener('click', function() {
+    const currentQuestion = questions[currentQuestionIndex];
+    if (currentQuestion) {
+        generateSpeech(currentQuestion.question);
+    }
+});
+
 // Feedback buttons
 thumbsUpButton.addEventListener('click', function() {
     submitFeedback('positive');
@@ -578,11 +586,13 @@ function restartQuiz() {
     // Remover seleção de emoji
     emojiButtons.forEach(btn => btn.classList.remove('selected'));
     
-    // Reset feedback buttons
+    // Reset feedback buttons and textarea
     thumbsUpButton.classList.remove('selected');
     thumbsDownButton.classList.remove('selected');
     thumbsUpButton.disabled = false;
     thumbsDownButton.disabled = false;
+    writtenFeedback.disabled = false;
+    writtenFeedback.value = '';
     feedbackMessage.classList.add('hidden');
     
     // Voltar para tela de registro
@@ -602,10 +612,13 @@ function clearScores() {
 
 // --- Feedback Functions ---
 function submitFeedback(type) {
+    const writtenComment = writtenFeedback.value.trim();
+    
     // Save feedback to localStorage
     let feedback = JSON.parse(localStorage.getItem('quizFeedback')) || [];
     feedback.push({
         type: type,
+        comment: writtenComment,
         date: new Date().toLocaleDateString('pt-BR'),
         student: currentStudentName,
         emoji: currentStudentEmoji
@@ -626,9 +639,10 @@ function submitFeedback(type) {
     
     feedbackMessage.classList.remove('hidden');
     
-    // Disable buttons after feedback
+    // Disable buttons and textarea after feedback
     thumbsUpButton.disabled = true;
     thumbsDownButton.disabled = true;
+    writtenFeedback.disabled = true;
 }
 
 // Inicialização
