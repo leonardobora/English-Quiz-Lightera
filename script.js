@@ -282,10 +282,11 @@ function selectAnswer(selectedOption, selectedButton) {
         }
     });
     
-    // Atualizar pontuação
+    // Atualizar pontuação e mostrar confetti se correto
     if (isCorrect) {
         currentScore += 10;
         scoreDisplay.textContent = currentScore;
+        createConfetti();
     }
     
     // Mostrar explicação
@@ -303,21 +304,26 @@ function nextQuestion() {
 
 function endQuiz() {
     // Salvar pontuação
-    saveScore(currentStudentName, currentScore);
+    saveScore(currentStudentName, currentScore, currentStudentEmoji);
     
     // Trocar para tela final
     quizScreen.classList.add('hidden');
     finalScoreScreen.classList.remove('hidden');
+    
+    // Confetti para pontuação alta (7+ corretas)
+    if (currentScore >= 70) {
+        createConfetti();
+    }
     
     // Mensagem personalizada baseada na pontuação
     let message = '';
     let trophy = '';
     
     if (currentScore >= 90) {
-        message = `Excelente, ${currentStudentName}! Você domina o inglês conversacional!`;
+        message = `Excelente, ${currentStudentName}! Você domina o inglês americano conversacional!`;
         trophy = '🏆';
     } else if (currentScore >= 70) {
-        message = `Muito bem, ${currentStudentName}! Você tem um bom conhecimento de inglês!`;
+        message = `Muito bem, ${currentStudentName}! Você tem um bom conhecimento de inglês americano!`;
         trophy = '🥈';
     } else if (currentScore >= 50) {
         message = `Bom trabalho, ${currentStudentName}! Continue praticando!`;
@@ -333,9 +339,9 @@ function endQuiz() {
     displayLeaderboard();
 }
 
-function saveScore(name, score) {
+function saveScore(name, score, emoji) {
     let scores = JSON.parse(localStorage.getItem('prismaQuizScores')) || [];
-    scores.push({ name: name, score: score, date: new Date().toLocaleDateString('pt-BR') });
+    scores.push({ name: name, score: score, emoji: emoji, date: new Date().toLocaleDateString('pt-BR') });
     
     // Ordenar por pontuação (maior primeiro)
     scores.sort((a, b) => b.score - a.score);
@@ -361,9 +367,10 @@ function displayLeaderboard() {
     
     scores.forEach((scoreData, index) => {
         const li = document.createElement('li');
+        const emoji = scoreData.emoji || '😊'; // Fallback for old scores without emoji
         li.innerHTML = `
             <strong>#${index + 1}</strong> 
-            ${scoreData.name} - 
+            ${emoji} ${scoreData.name} - 
             <strong>${scoreData.score}</strong> pontos 
             <small>(${scoreData.date})</small>
         `;
@@ -374,11 +381,15 @@ function displayLeaderboard() {
 function restartQuiz() {
     // Resetar estado
     currentStudentName = '';
+    currentStudentEmoji = '';
     currentScore = 0;
     currentQuestionIndex = 0;
     
     // Limpar input
     studentNameInput.value = '';
+    
+    // Remover seleção de emoji
+    emojiButtons.forEach(btn => btn.classList.remove('selected'));
     
     // Voltar para tela de registro
     finalScoreScreen.classList.add('hidden');
