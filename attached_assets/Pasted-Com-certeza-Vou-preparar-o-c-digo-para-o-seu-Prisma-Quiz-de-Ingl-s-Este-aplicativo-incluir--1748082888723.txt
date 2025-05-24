@@ -1,0 +1,642 @@
+Com certeza! Vou preparar o código para o seu "Prisma Quiz de Inglês".
+Este aplicativo incluirá:
+ * Uma tela de registro para o nome do aluno.
+ * Uma tela de quiz onde as perguntas são apresentadas. O "prisma" será representado por um elemento <canvas> que mudará sutilmente a cada pergunta (por exemplo, mudando a cor ou um número indicativo).
+ * Uma tela final mostrando a pontuação do aluno e um ranking geral, que será salvo no navegador usando localStorage.
+Vou usar as perguntas que definimos anteriormente, com foco em inglês conversacional e cultura pop.
+Aqui está o código:
+<immersive id="prismaQuizIngles" type="code" title="Prisma Quiz de Inglês Interativo">
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prisma Quiz de Inglês</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            /* Apply a subtle gradient background or a solid color */
+            background: linear-gradient(120deg, #84fab0 0%, #8fd3f4 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 1rem; /* Add padding for smaller screens */
+        }
+        .quiz-container {
+            background-color: rgba(255, 255, 255, 0.95); /* Slightly transparent white */
+            padding: 2rem; /* Increased padding */
+            border-radius: 1rem; /* More rounded corners */
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15); /* Softer, larger shadow */
+            text-align: center;
+            width: 100%;
+            max-width: 600px; /* Increased max-width */
+            transition: all 0.3s ease-in-out;
+        }
+        /* Input styling */
+        input[type="text"] {
+            padding: 0.75rem 1rem; /* Adjusted padding */
+            margin: 0.75rem 0;
+            border: 1px solid #cbd5e1; /* Softer border color */
+            border-radius: 0.5rem; /* More rounded */
+            width: calc(100% - 2rem); /* Full width minus padding */
+            box-sizing: border-box; /* Include padding and border in the element's total width and height */
+            transition: border-color 0.3s ease;
+        }
+        input[type="text"]:focus {
+            border-color: #3b82f6; /* Tailwind blue-500 */
+            outline: none; /* Remove default focus outline */
+            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.3); /* Subtle focus ring */
+        }
+
+        /* Button styling */
+        button {
+            padding: 0.75rem 1.5rem; /* Adjusted padding */
+            background-color: #3b82f6; /* Tailwind blue-500 */
+            color: white;
+            border: none;
+            border-radius: 0.5rem; /* More rounded */
+            cursor: pointer;
+            font-size: 1rem; /* Adjusted font size */
+            font-weight: 500; /* Medium font weight */
+            transition: background-color 0.3s ease, transform 0.1s ease;
+            margin-top: 0.5rem; /* Add some margin */
+        }
+        button:hover {
+            background-color: #2563eb; /* Tailwind blue-600 */
+        }
+        button:active {
+            transform: translateY(1px); /* Slight press effect */
+        }
+        /* Option button specific styling */
+        #optionsArea button {
+            display: block;
+            width: 100%;
+            margin: 0.5rem 0; /* Adjusted margin */
+            background-color: #64748b; /* Tailwind slate-500 */
+            text-align: left; /* Align text to the left for options */
+            padding: 0.75rem 1rem; /* Consistent padding */
+        }
+        #optionsArea button:hover {
+            background-color: #475569; /* Tailwind slate-600 */
+        }
+        #optionsArea button.correct {
+            background-color: #16a34a; /* Tailwind green-600 */
+            color: white;
+        }
+        #optionsArea button.incorrect {
+            background-color: #dc2626; /* Tailwind red-600 */
+            color: white;
+        }
+        #optionsArea button:disabled { /* Style for disabled buttons after answer */
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+        /* Canvas styling */
+        #interactivePrism {
+            border: 2px solid #e2e8f0; /* Tailwind slate-200 */
+            margin-bottom: 1.5rem; /* Increased margin */
+            border-radius: 0.5rem; /* Rounded corners for canvas */
+            background-color: #f8fafc; /* Tailwind slate-50 for canvas background */
+            max-width: 100%; /* Ensure canvas is responsive */
+        }
+        /* Leaderboard styling */
+        #leaderboard {
+            list-style-type: none;
+            padding: 0;
+            margin-top: 1rem; /* Add margin */
+        }
+        #leaderboard li {
+            padding: 0.75rem; /* Adjusted padding */
+            border-bottom: 1px solid #e2e8f0; /* Tailwind slate-200 */
+            text-align: left; /* Align text to the left */
+            font-size: 0.95rem; /* Slightly adjusted font size */
+        }
+        #leaderboard li:last-child {
+            border-bottom: none;
+        }
+        #leaderboard li:nth-child(odd) {
+            background-color: #f8fafc; /* Tailwind slate-50 for alternating rows */
+        }
+        /* Headings and text */
+        h1 {
+            font-size: 1.875rem; /* Tailwind text-3xl */
+            font-weight: 700; /* Bold */
+            color: #1e293b; /* Tailwind slate-800 */
+            margin-bottom: 1.5rem; /* Increased margin */
+        }
+        h2 {
+            font-size: 1.5rem; /* Tailwind text-2xl */
+            font-weight: 600; /* Semi-bold */
+            color: #334155; /* Tailwind slate-700 */
+            margin-top: 1rem;
+            margin-bottom: 1rem; /* Adjusted margin */
+        }
+        p {
+            font-size: 1rem; /* Tailwind text-base */
+            color: #475569; /* Tailwind slate-600 */
+            line-height: 1.6; /* Improved readability */
+            margin-bottom: 1rem; /* Add some margin */
+        }
+        #questionText {
+            font-size: 1.125rem; /* Tailwind text-lg */
+            font-weight: 500; /* Medium */
+            color: #1e293b; /* Tailwind slate-800 */
+            min-height: 3em; /* Ensure space for question text */
+        }
+        /* Utility classes for hiding/showing screens */
+        .hidden {
+            display: none !important;
+        }
+        /* Message for no scores */
+        .no-scores {
+            color: #64748b; /* Tailwind slate-500 */
+            font-style: italic;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 640px) { /* Tailwind sm breakpoint */
+            .quiz-container {
+                padding: 1.5rem;
+            }
+            h1 {
+                font-size: 1.5rem; /* text-2xl */
+            }
+            h2 {
+                font-size: 1.25rem; /* text-xl */
+            }
+            button {
+                padding: 0.6rem 1.2rem;
+                font-size: 0.9rem;
+            }
+            input[type="text"] {
+                padding: 0.6rem 0.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="appContainer" class="quiz-container">
+        <div id="registrationScreen">
+            <h1>Prisma Quiz de Inglês</h1>
+            <p>Bem-vindo! Insira seu nome para começar a testar seus conhecimentos.</p>
+            <div>
+                <label for="studentName" class="block text-sm font-medium text-slate-700 sr-only">Seu Nome:</label>
+                <input type="text" id="studentName" name="studentName" placeholder="Digite seu nome aqui" class="mt-1">
+            </div>
+            <button id="startButton" class="mt-4">Começar!</button>
+            <div id="nameError" class="text-red-500 text-sm mt-2 hidden">Por favor, insira seu nome.</div>
+        </div>
+
+        <div id="quizScreen" class="hidden">
+            <h2 id="welcomeMessage" class="text-xl font-semibold mb-2"></h2>
+            <canvas id="interactivePrism" width="200" height="200"></canvas>
+            <div id="questionArea" class="mt-4">
+                <p id="questionText" class="mb-4"></p>
+                <div id="optionsArea" class="space-y-2">
+                    </div>
+            </div>
+            <p class="mt-6 text-lg">Pontuação: <span id="score" class="font-bold">0</span></p>
+            <button id="nextButton" class="mt-4 hidden">Próxima Pergunta</button>
+            <p id="explanationText" class="mt-3 text-sm text-slate-600 hidden"></p>
+        </div>
+
+        <div id="finalScoreScreen" class="hidden">
+            <h1>Resultados</h1>
+            <p id="finalMessage" class="text-lg mb-4"></p>
+            <div id="trophyContainer" class="my-4"></div>
+            <h2>Ranking Geral:</h2>
+            <ul id="leaderboard" class="mb-6">
+                </ul>
+            <button id="restartButton">Jogar Novamente</button>
+            <button id="clearScoresButton" class="mt-2 bg-red-500 hover:bg-red-600">Limpar Ranking</button>
+        </div>
+    </div>
+
+    <script>
+        // Elementos da DOM
+        const registrationScreen = document.getElementById('registrationScreen');
+        const quizScreen = document.getElementById('quizScreen');
+        const finalScoreScreen = document.getElementById('finalScoreScreen');
+
+        const studentNameInput = document.getElementById('studentName');
+        const startButton = document.getElementById('startButton');
+        const nameError = document.getElementById('nameError');
+        
+        const welcomeMessage = document.getElementById('welcomeMessage');
+        const canvas = document.getElementById('interactivePrism');
+        const ctx = canvas.getContext('2d');
+
+        const questionText = document.getElementById('questionText');
+        const optionsArea = document.getElementById('optionsArea');
+        const scoreDisplay = document.getElementById('score');
+        const nextButton = document.getElementById('nextButton');
+        const explanationText = document.getElementById('explanationText');
+
+        const finalMessage = document.getElementById('finalMessage');
+        const trophyContainer = document.getElementById('trophyContainer');
+        const leaderboardList = document.getElementById('leaderboard');
+        const restartButton = document.getElementById('restartButton');
+        const clearScoresButton = document.getElementById('clearScoresButton');
+
+        // Variáveis do estado do jogo
+        let currentStudentName = '';
+        let currentScore = 0;
+        let currentQuestionIndex = 0;
+        let questions = [];
+        const TOTAL_QUESTIONS_TO_ASK = 10;
+
+        // --- Perguntas ---
+        function loadQuestions() {
+            // Banco de perguntas maior para variedade
+            const allQuestions = [
+                {
+                    question: "If someone says 'I'm knackered', what do they mean?",
+                    options: ["They are very happy.", "They are very tired.", "They are very hungry.", "They are very excited."],
+                    answer: "They are very tired.",
+                    explanation: "'Knackered' é uma gíria britânica para 'extremamente cansado'."
+                },
+                {
+                    question: "What's a common way to respond to 'What have you been up to lately?'",
+                    options: ["'I'm fine, thanks.'", "'Not much, just working and trying to catch up on some series. You?'", "'My name is John.'", "'I like pizza.'"],
+                    answer: "'Not much, just working and trying to catch up on some series. You?'",
+                    explanation: "Esta é uma resposta típica e amigável que convida a mais conversa."
+                },
+                {
+                    question: "Which phrase is NOT typically used to express agreement?",
+                    options: ["'You can say that again!'", "'I'm on the fence about that.'", "'Tell me about it!'", "'Exactly!'"],
+                    answer: "'I'm on the fence about that.'",
+                    explanation: "'On the fence' significa que você está indeciso."
+                },
+                {
+                    question: "A friend tells you they 'binge-watched' an entire season of a show. What did they do?",
+                    options: ["They watched it very slowly.", "They watched many episodes in a short period.", "They didn't like the show.", "They watched it with many friends."],
+                    answer: "They watched many episodes in a short period.",
+                    explanation: "'Binge-watching' significa assistir a múltiplos episódios de uma série de TV em rápida sucessão."
+                },
+                {
+                    question: "What does the idiom 'to spill the beans' mean?",
+                    options: ["To cook something delicious.", "To be clumsy.", "To reveal a secret.", "To plant vegetables."],
+                    answer: "To reveal a secret.",
+                    explanation: "Se você 'spill the beans', você revela informações que deveriam ser mantidas em segredo."
+                },
+                {
+                    question: "If a movie is a 'blockbuster', it generally means:",
+                    options: ["It's an independent film.", "It's a very successful and popular movie.", "It's a low-budget film.", "It's a documentary."],
+                    answer: "It's a very successful and popular movie.",
+                    explanation: "Um 'blockbuster' é um filme de grande sucesso comercial."
+                },
+                {
+                    question: "What is 'clickbait'?",
+                    options: ["A type of fishing lure.", "Content whose main purpose is to attract attention and encourage visitors to click on a link.", "A secure online payment method.", "A computer virus."],
+                    answer: "Content whose main purpose is to attract attention and encourage visitors to click on a link.",
+                    explanation: "Clickbait frequentemente usa manchetes sensacionalistas ou imagens chamativas."
+                },
+                {
+                    question: "If you want to politely interrupt someone, you could say:",
+                    options: ["'Stop talking!'", "'Excuse me, may I jump in for a moment?'", "'Be quiet, I have something to say.'", "'That's wrong!'"],
+                    answer: "'Excuse me, may I jump in for a moment?'",
+                    explanation: "Esta é uma forma educada de entrar numa conversa."
+                },
+                {
+                    question: "What does 'FOMO' stand for?",
+                    options: ["Fear Of Missing Out", "Forgetting My Old Order", "Finding More Opportunities", "Focus On My Objectives"],
+                    answer: "Fear Of Missing Out",
+                    explanation: "FOMO é a sensação de ansiedade de que um evento excitante ou interessante pode estar acontecendo em outro lugar."
+                },
+                {
+                    question: "When would you say 'Break a leg!' to someone?",
+                    options: ["When you want them to get hurt.", "As a way to wish them good luck, especially before a performance.", "When they are going on a long journey.", "When they are starting a new job."],
+                    answer: "As a way to wish them good luck, especially before a performance.",
+                    explanation: "'Break a leg' é uma expressão idiomática usada para desejar boa sorte a um artista."
+                },
+                {
+                    question: "What does it mean if something is 'state-of-the-art'?",
+                    options: ["It's very old.", "It's very artistic.", "It's the most modern and technologically advanced.", "It's broken."],
+                    answer: "It's the most modern and technologically advanced.",
+                    explanation: "'State-of-the-art' refere-se ao nível mais alto de desenvolvimento ou tecnologia."
+                },
+                {
+                    question: "If you 'call it a day', what are you doing?",
+                    options: ["Making a phone call.", "Starting a new day.", "Deciding to stop working on something.", "Naming the day of the week."],
+                    answer: "Deciding to stop working on something.",
+                    explanation: "'Call it a day' significa parar o trabalho ou atividade por aquele dia."
+                },
+                {
+                    question: "What is a 'gig economy'?",
+                    options: ["An economy based on live music performances.", "A labor market characterized by short-term contracts or freelance work.", "An economy with very large companies.", "An economy focused on agriculture."],
+                    answer: "A labor market characterized by short-term contracts or freelance work.",
+                    explanation: "Na 'gig economy', as pessoas muitas vezes têm trabalhos temporários ou projetos independentes."
+                },
+                {
+                    question: "If someone is 'down-to-earth', they are:",
+                    options: ["Not intelligent.", "Practical, realistic, and friendly.", "Someone who loves gardening.", "Someone who is often sad."],
+                    answer: "Practical, realistic, and friendly.",
+                    explanation: "Uma pessoa 'down-to-earth' é sensata e fácil de se relacionar."
+                },
+                {
+                    question: "What does the acronym 'DIY' stand for?",
+                    options: ["Don't Injure Yourself", "Do It Yourself", "Data Input Yield", "Daily Important Yarns"],
+                    answer: "Do It Yourself",
+                    explanation: "'DIY' refere-se a construir, modificar ou reparar coisas por conta própria, sem a ajuda direta de especialistas."
+                }
+            ];
+            // Embaralhar perguntas
+            questions = allQuestions.sort(() => Math.random() - 0.5).slice(0, TOTAL_QUESTIONS_TO_ASK);
+        }
+
+        // --- Lógica do Canvas (Prisma Simples) ---
+        function drawPrism(questionNumber) {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            const colors = ["#84fab0", "#8fd3f4", "#a1c4fd", "#c2e9fb", "#d4fc79", "#96e6a1", "#f6d365", "#fda085", "#fbc2eb", "#a6c1ee"];
+            const centerX = canvas.width / 2;
+            const centerY = canvas.height / 2;
+            const radius = Math.min(centerX, centerY) * 0.8; // Ajusta o raio para caber no canvas
+            const sides = 6; // Hexágono para simplicidade
+
+            ctx.beginPath();
+            for (let i = 0; i < sides; i++) {
+                ctx.lineTo(
+                    centerX + radius * Math.cos(Math.PI / sides * (2 * i + 1)), // Ajuste para alinhar melhor
+                    centerY + radius * Math.sin(Math.PI / sides * (2 * i + 1))
+                );
+            }
+            ctx.closePath();
+            
+            // Gradiente sutil para a face do prisma
+            const gradient = ctx.createRadialGradient(centerX, centerY, radius * 0.2, centerX, centerY, radius);
+            gradient.addColorStop(0, colors[questionNumber % colors.length]);
+            gradient.addColorStop(1, chroma(colors[questionNumber % colors.length]).darken(0.5).hex()); // Usar chroma.js se disponível, ou uma cor mais escura manualmente
+            
+            ctx.fillStyle = colors[questionNumber % colors.length]; // Cor sólida como fallback
+            try { // Tenta usar o gradiente, mas tem fallback se chroma não estiver definido
+                if (typeof chroma !== 'undefined') {
+                     const baseColor = chroma(colors[questionNumber % colors.length]);
+                     const gradient = ctx.createRadialGradient(centerX, centerY, radius * 0.1, centerX, centerY, radius);
+                     gradient.addColorStop(0, baseColor.brighter(0.5).hex());
+                     gradient.addColorStop(1, baseColor.darken(0.5).hex());
+                     ctx.fillStyle = gradient;
+                } else {
+                    // Se chroma.js não estiver disponível, use uma cor sólida ou um gradiente simples
+                    const baseColorHex = colors[questionNumber % colors.length];
+                    const darkerColorHex = shadeColor(baseColorHex, -20); // Função auxiliar para escurecer
+                     const gradient = ctx.createRadialGradient(centerX, centerY, radius * 0.1, centerX, centerY, radius);
+                     gradient.addColorStop(0, baseColorHex);
+                     gradient.addColorStop(1, darkerColorHex);
+                     ctx.fillStyle = gradient;
+                }
+            } catch (e) {
+                console.warn("Chroma.js não carregado, usando cor sólida para o prisma.");
+                ctx.fillStyle = colors[questionNumber % colors.length];
+            }
+
+
+            ctx.fill();
+            ctx.strokeStyle = "#4a5568"; // Tailwind gray-700
+            ctx.lineWidth = 3;
+            ctx.stroke();
+
+            ctx.fillStyle = chroma.contrast(ctx.fillStyle, 'white') > 4.5 ? 'white' : 'black'; // Escolhe cor do texto para contraste
+            ctx.font = `bold ${radius * 0.3}px Inter, sans-serif`; // Tamanho da fonte responsivo
+            ctx.textAlign = "center";
+            ctx.textBaseline = "middle";
+            ctx.fillText(`Q ${questionNumber + 1}`, centerX, centerY);
+        }
+        
+        // Função auxiliar para escurecer/clarear cores (se chroma.js não for usado)
+        function shadeColor(color, percent) {
+            let R = parseInt(color.substring(1,3),16);
+            let G = parseInt(color.substring(3,5),16);
+            let B = parseInt(color.substring(5,7),16);
+
+            R = parseInt(R * (100 + percent) / 100);
+            G = parseInt(G * (100 + percent) / 100);
+            B = parseInt(B * (100 + percent) / 100);
+
+            R = (R<255)?R:255;  
+            G = (G<255)?G:255;  
+            B = (B<255)?B:255;  
+
+            const RR = ((R.toString(16).length==1)?"0"+R.toString(16):R.toString(16));
+            const GG = ((G.toString(16).length==1)?"0"+G.toString(16):G.toString(16));
+            const BB = ((B.toString(16).length==1)?"0"+B.toString(16):B.toString(16));
+
+            return "#"+RR+GG+BB;
+        }
+
+
+        // --- Lógica do Quiz ---
+        startButton.addEventListener('click', () => {
+            currentStudentName = studentNameInput.value.trim();
+            if (currentStudentName === "") {
+                nameError.classList.remove('hidden');
+                studentNameInput.focus();
+                return;
+            }
+            nameError.classList.add('hidden');
+            registrationScreen.classList.add('hidden');
+            quizScreen.classList.remove('hidden');
+            
+            welcomeMessage.textContent = `Boa sorte, ${currentStudentName}!`;
+            currentScore = 0;
+            currentQuestionIndex = 0;
+            scoreDisplay.textContent = currentScore;
+            explanationText.classList.add('hidden');
+            loadQuestions();
+            displayQuestion();
+        });
+
+        function displayQuestion() {
+            explanationText.classList.add('hidden');
+            explanationText.textContent = '';
+
+            if (currentQuestionIndex < questions.length) {
+                const q = questions[currentQuestionIndex];
+                questionText.textContent = q.question;
+                optionsArea.innerHTML = ''; 
+
+                // Embaralhar opções de resposta
+                const shuffledOptions = [...q.options].sort(() => Math.random() - 0.5);
+
+                shuffledOptions.forEach(option => {
+                    const button = document.createElement('button');
+                    button.textContent = option;
+                    button.addEventListener('click', () => checkAnswer(option, q.answer, q.explanation, button));
+                    optionsArea.appendChild(button);
+                });
+                drawPrism(currentQuestionIndex); 
+                nextButton.classList.add('hidden');
+            } else {
+                showFinalScore();
+            }
+        }
+
+        function checkAnswer(selectedOption, correctAnswer, explanation, button) {
+            const optionButtons = optionsArea.querySelectorAll('button');
+            optionButtons.forEach(btn => {
+                btn.disabled = true; // Desabilita todos os botões
+                if (btn.textContent === correctAnswer) {
+                    btn.classList.add('correct');
+                } else if (btn.textContent === selectedOption) {
+                    btn.classList.add('incorrect');
+                }
+            });
+
+            if (selectedOption === correctAnswer) {
+                currentScore++;
+                scoreDisplay.textContent = currentScore;
+            }
+            
+            explanationText.textContent = `Explicação: ${explanation}`;
+            explanationText.classList.remove('hidden');
+            nextButton.classList.remove('hidden');
+        }
+
+        nextButton.addEventListener('click', () => {
+            currentQuestionIndex++;
+            displayQuestion();
+        });
+
+        // --- Tela Final e Ranking ---
+        function showFinalScore() {
+            quizScreen.classList.add('hidden');
+            finalScoreScreen.classList.remove('hidden');
+            
+            const percentage = (currentScore / questions.length) * 100;
+            let trophy = '';
+            if (percentage === 100) {
+                trophy = '🏆🥇 Perfeito!';
+            } else if (percentage >= 80) {
+                trophy = '🥇 Ótimo Trabalho!';
+            } else if (percentage >= 60) {
+                trophy = '🥈 Muito Bom!';
+            } else if (percentage >= 40) {
+                trophy = '🥉 Bom Esforço!';
+            } else {
+                trophy = 'Continue Tentando!';
+            }
+            trophyContainer.innerHTML = `<span class="text-3xl">${trophy.split(' ')[0]}</span> <span class="text-xl">${trophy.substring(trophy.indexOf(' ')+1)}</span>`;
+
+            finalMessage.textContent = `Parabéns, ${currentStudentName}! Sua pontuação final é: ${currentScore} de ${questions.length}. (${percentage.toFixed(0)}%)`;
+            saveScore();
+            displayLeaderboard();
+        }
+
+        function saveScore() {
+            let scores = JSON.parse(localStorage.getItem('prismaQuizScores_v2')) || []; // v2 para nova estrutura
+            
+            const existingStudentIndex = scores.findIndex(s => s.name.toLowerCase() === currentStudentName.toLowerCase());
+
+            if (existingStudentIndex > -1) {
+                // Atualiza apenas se a nova pontuação for maior
+                if (currentScore > scores[existingStudentIndex].score) {
+                    scores[existingStudentIndex].score = currentScore;
+                    scores[existingStudentIndex].percentage = (currentScore / questions.length) * 100;
+                }
+            } else {
+                scores.push({ 
+                    name: currentStudentName, 
+                    score: currentScore,
+                    percentage: (currentScore / questions.length) * 100,
+                    date: new Date().toLocaleDateString('pt-BR') // Adiciona data
+                });
+            }
+            
+            scores.sort((a, b) => b.score - a.score || a.name.localeCompare(b.name)); // Ordena por pontuação, depois por nome
+            localStorage.setItem('prismaQuizScores_v2', JSON.stringify(scores.slice(0, 10))); // Salva top 10
+        }
+
+        function displayLeaderboard() {
+            leaderboardList.innerHTML = '';
+            const scores = JSON.parse(localStorage.getItem('prismaQuizScores_v2')) || [];
+
+            if (scores.length === 0) {
+                leaderboardList.innerHTML = '<li class="no-scores">Ainda não há pontuações. Seja o primeiro!</li>';
+                return;
+            }
+
+            scores.forEach((scoreItem, index) => {
+                const li = document.createElement('li');
+                let medal = '';
+                if (index === 0) medal = '🥇 ';
+                else if (index === 1) medal = '🥈 ';
+                else if (index === 2) medal = '🥉 ';
+
+                li.innerHTML = `${medal}<strong>${scoreItem.name}</strong>: ${scoreItem.score} (${scoreItem.percentage.toFixed(0)}%) - <span class="text-xs text-slate-500">${scoreItem.date || ''}</span>`;
+                leaderboardList.appendChild(li);
+            });
+        }
+
+        restartButton.addEventListener('click', () => {
+            finalScoreScreen.classList.add('hidden');
+            registrationScreen.classList.remove('hidden');
+            studentNameInput.value = '';
+            studentNameInput.focus();
+        });
+
+        clearScoresButton.addEventListener('click', () => {
+            if (confirm("Tem certeza que deseja limpar todo o ranking? Esta ação não pode ser desfeita.")) {
+                localStorage.removeItem('prismaQuizScores_v2');
+                displayLeaderboard();
+            }
+        });
+        
+        // Tenta carregar chroma.js para gradientes mais bonitos no canvas
+        const scriptChroma = document.createElement('script');
+        scriptChroma.src = "https://cdnjs.cloudflare.com/ajax/libs/chroma-js/2.4.2/chroma.min.js";
+        scriptChroma.onload = () => {
+            console.log("Chroma.js carregado.");
+            // Redesenha o prisma inicial se o quiz não começou, para aplicar o gradiente
+            if (quizScreen.classList.contains('hidden') && registrationScreen.classList.contains('hidden') === false) {
+                 drawPrism(0); // Desenha com a cor da primeira pergunta (ou um padrão)
+            } else if (!quizScreen.classList.contains('hidden')) {
+                drawPrism(currentQuestionIndex); // Redesenha o prisma atual se o quiz estiver ativo
+            }
+        };
+        scriptChroma.onerror = () => {
+            console.warn("Não foi possível carregar Chroma.js. Usando cores sólidas para o prisma.");
+        };
+        document.head.appendChild(scriptChroma);
+
+
+        // Inicialização
+        window.onload = () => {
+            drawPrism(0); // Desenha o prisma inicial na tela de quiz (mesmo que escondida)
+            studentNameInput.focus();
+        }
+
+    </script>
+</body>
+</html>
+
+</immersive>
+Como usar este código:
+ * Crie um arquivo chamado prisma_quiz.html (ou qualquer nome com a extensão .html).
+ * Copie e cole todo o código acima neste arquivo.
+ * Salve o arquivo.
+ * Abra este arquivo prisma_quiz.html em qualquer navegador moderno (como Chrome, Firefox, Edge).
+Melhorias e Explicações Adicionais:
+ * Estilização com Tailwind CSS: Utilizei Tailwind CSS para um design moderno e responsivo. O link para o CDN está incluído no <head>.
+ * Fonte Inter: Adicionei a fonte Inter para uma melhor tipografia.
+ * Prisma no Canvas:
+   * A função drawPrism agora desenha um hexágono simples que muda de cor e exibe o número da questão (Q1, Q2, etc.).
+   * Tentei adicionar um gradiente sutil usando chroma.js. Se a biblioteca não carregar, ele usará cores sólidas como fallback.
+ * Banco de Perguntas: O loadQuestions agora tem um banco maior de perguntas (15 no total) e seleciona aleatoriamente TOTAL_QUESTIONS_TO_ASK (definido como 10) para cada sessão, e também embaralha as opções de resposta.
+ * Feedback e Explicações: Após responder, a explicação da pergunta é exibida.
+ * Ranking (Leaderboard):
+   * Salva nome, pontuação, percentual e data.
+   * Ordena por pontuação (maior primeiro) e depois por nome em caso de empate.
+   * Exibe medalhas para os 3 primeiros.
+   * Adicionado um botão "Limpar Ranking" (com confirmação).
+   * Usa prismaQuizScores_v2 no localStorage para evitar conflitos com versões antigas se você testou antes.
+ * Validação de Nome: Impede o início do quiz sem um nome.
+ * Melhorias Visuais:
+   * Cores mais vibrantes e um leve gradiente no fundo.
+   * Botões e inputs com cantos mais arredondados e sombras sutis.
+   * Mensagem de "Parabéns" mais elaborada com um "troféu" emoji.
+ * Responsividade: O layout deve se adaptar bem a telas de celular.
+Seus alunos podem simplesmente abrir este arquivo HTML no navegador do computador da sala de aula ou em seus próprios dispositivos. Divirtam-se!
