@@ -155,6 +155,120 @@ function loadQuestions() {
             options: ["They are simple/mainstream in their tastes.", "They are fundamental.", "They are acidic.", "They are elementary."],
             answer: "They are simple/mainstream in their tastes.",
             explanation: "'Basic' descreve alguém com gostos convencionais ou mainstream."
+        },
+        {
+            question: "What does 'spill the tea' mean in American slang?",
+            options: ["Accidentally drop your drink.", "Share gossip or secrets.", "Make tea properly.", "Clean up a mess."],
+            answer: "Share gossip or secrets.",
+            explanation: "'Spill the tea' significa compartilhar fofocas ou segredos."
+        },
+        {
+            question: "If someone says 'I'm pressed' about something, what do they mean?",
+            options: ["They are relaxed.", "They are stressed or bothered.", "They are happy.", "They are confused."],
+            answer: "They are stressed or bothered.",
+            explanation: "'Pressed' significa estar estressado ou incomodado com algo."
+        },
+        {
+            question: "What's the best response to 'How are you holding up?'",
+            options: ["I'm 6 feet tall.", "I'm doing okay, thanks for asking.", "I like your shirt.", "It's Tuesday."],
+            answer: "I'm doing okay, thanks for asking.",
+            explanation: "Esta pergunta se refere a como você está lidando com uma situação difícil."
+        },
+        {
+            question: "When someone says 'That's cap', what do they mean?",
+            options: ["That's a hat.", "That's a lie.", "That's expensive.", "That's funny."],
+            answer: "That's a lie.",
+            explanation: "'Cap' é gíria para mentira, então 'that's cap' significa 'isso é mentira'."
+        },
+        {
+            question: "What does 'bet' mean as a response?",
+            options: ["I disagree.", "Okay/Sounds good.", "I'm confused.", "That's expensive."],
+            answer: "Okay/Sounds good.",
+            explanation: "'Bet' é uma forma casual de dizer 'ok' ou 'combinado'."
+        },
+        {
+            question: "If someone asks 'What's good?', what are they asking?",
+            options: ["What tastes good?", "What's happening/How are you?", "What's expensive?", "What's the time?"],
+            answer: "What's happening/How are you?",
+            explanation: "'What's good?' é uma saudação casual perguntando como você está."
+        },
+        {
+            question: "What does 'I'm living for this' mean?",
+            options: ["I'm surviving because of this.", "I absolutely love this.", "I'm working for this.", "I'm dying from this."],
+            answer: "I absolutely love this.",
+            explanation: "'Living for this' significa que você ama muito algo."
+        },
+        {
+            question: "When someone says 'Say less', what do they mean?",
+            options: ["Talk quietly.", "I'm already convinced/I'm in.", "Don't talk to me.", "Speak more clearly."],
+            answer: "I'm already convinced/I'm in.",
+            explanation: "'Say less' significa que você já está convencido e não precisa de mais persuasão."
+        },
+        {
+            question: "What's a natural way to ask someone to wait a moment?",
+            options: ["Stop moving!", "Hold up a sec.", "Don't go anywhere forever.", "Stay there permanently."],
+            answer: "Hold up a sec.",
+            explanation: "'Hold up a sec' é uma forma casual de pedir para alguém esperar um momento."
+        },
+        {
+            question: "If someone says 'That hits different', what do they mean?",
+            options: ["That's violent.", "That feels especially good/special.", "That's strange.", "That's difficult."],
+            answer: "That feels especially good/special.",
+            explanation: "'Hits different' significa que algo é especialmente bom ou tem um efeito especial."
+        },
+        {
+            question: "What does 'I'm not gonna lie' typically introduce?",
+            options: ["A lie.", "An honest opinion or admission.", "A joke.", "A question."],
+            answer: "An honest opinion or admission.",
+            explanation: "'I'm not gonna lie' é usado para introduzir uma opinião honesta."
+        },
+        {
+            question: "When someone says 'That's a mood', what are they expressing?",
+            options: ["That's emotional.", "I totally relate to that feeling.", "That's confusing.", "That's expensive."],
+            answer: "I totally relate to that feeling.",
+            explanation: "'That's a mood' significa que você se identifica com o sentimento."
+        },
+        {
+            question: "What's the most natural response to 'My bad'?",
+            options: ["Your good.", "No worries/It's all good.", "Yes, it is bad.", "I agree."],
+            answer: "No worries/It's all good.",
+            explanation: "'My bad' é um pedido de desculpas casual, então 'no worries' é uma resposta apropriada."
+        },
+        {
+            question: "If someone says 'I'm shook', what do they mean?",
+            options: ["They are cold.", "They are surprised/shocked.", "They are dancing.", "They are angry."],
+            answer: "They are surprised/shocked.",
+            explanation: "'Shook' significa estar surpreso ou chocado com algo."
+        },
+        {
+            question: "What does 'slide into DMs' mean?",
+            options: ["Go down a slide.", "Send a private message.", "Enter a building.", "Delete messages."],
+            answer: "Send a private message.",
+            explanation: "'Slide into DMs' significa enviar uma mensagem privada para alguém."
+        },
+        {
+            question: "When someone says 'We stan', what do they mean?",
+            options: ["We stand up.", "We really support/love someone.", "We're confused.", "We're standing still."],
+            answer: "We really support/love someone.",
+            explanation: "'Stan' significa apoiar ou amar muito alguém ou algo."
+        },
+        {
+            question: "What's a casual way to say goodbye in American English?",
+            options: ["Farewell forever.", "Catch you later.", "Until we meet in heaven.", "Goodbye permanently."],
+            answer: "Catch you later.",
+            explanation: "'Catch you later' é uma forma casual e amigável de se despedir."
+        },
+        {
+            question: "If someone says 'That's so random', what do they mean?",
+            options: ["That's mathematical.", "That's unexpected/odd.", "That's organized.", "That's planned."],
+            answer: "That's unexpected/odd.",
+            explanation: "'Random' é usado para descrever algo inesperado ou estranho."
+        },
+        {
+            question: "What does 'I'm down' mean when someone suggests an activity?",
+            options: ["I'm sad.", "I'm interested/I want to do it.", "I'm lying down.", "I'm not feeling well."],
+            answer: "I'm interested/I want to do it.",
+            explanation: "'I'm down' significa que você está interessado em fazer algo."
         }
     ];
 
