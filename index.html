@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prisma Quiz de Inglês</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div id="appContainer" class="quiz-container">
+        <div id="registrationScreen">
+            <h1>Prisma Quiz de Inglês</h1>
+            <p>Bem-vindo! Insira seu nome para começar a testar seus conhecimentos.</p>
+            <div>
+                <label for="studentName" class="block text-sm font-medium text-slate-700 sr-only">Seu Nome:</label>
+                <input type="text" id="studentName" name="studentName" placeholder="Digite seu nome aqui" class="mt-1">
+            </div>
+            <button id="startButton" class="mt-4">Começar!</button>
+            <div id="nameError" class="text-red-500 text-sm mt-2 hidden">Por favor, insira seu nome.</div>
+        </div>
+
+        <div id="quizScreen" class="hidden">
+            <h2 id="welcomeMessage" class="text-xl font-semibold mb-2"></h2>
+            <canvas id="interactivePrism" width="200" height="200"></canvas>
+            <div id="questionArea" class="mt-4">
+                <p id="questionText" class="mb-4"></p>
+                <div id="optionsArea" class="space-y-2">
+                </div>
+            </div>
+            <p class="mt-6 text-lg">Pontuação: <span id="score" class="font-bold">0</span></p>
+            <button id="nextButton" class="mt-4 hidden">Próxima Pergunta</button>
+            <p id="explanationText" class="mt-3 text-sm text-slate-600 hidden"></p>
+        </div>
+
+        <div id="finalScoreScreen" class="hidden">
+            <h1>Resultados</h1>
+            <p id="finalMessage" class="text-lg mb-4"></p>
+            <div id="trophyContainer" class="my-4"></div>
+            <h2>Ranking Geral:</h2>
+            <ul id="leaderboard" class="mb-6">
+            </ul>
+            <button id="restartButton">Jogar Novamente</button>
+            <button id="clearScoresButton" class="mt-2 bg-red-500 hover:bg-red-600">Limpar Ranking</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
