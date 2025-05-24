@@ -582,8 +582,10 @@ function submitFeedback(type) {
 
 // Inicialização
 document.addEventListener('DOMContentLoaded', function() {
-    // Desenhar prisma inicial
-    drawPrism(0);
+    // Check if ENEM notice should be hidden
+    if (localStorage.getItem('enemNoticeHidden') === 'true') {
+        enemNotice.style.display = 'none';
+    }
     
     // Focar no input de nome
     studentNameInput.focus();
