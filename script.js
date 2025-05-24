@@ -6,16 +6,17 @@ const finalScoreScreen = document.getElementById('finalScoreScreen');
 const studentNameInput = document.getElementById('studentName');
 const startButton = document.getElementById('startButton');
 const nameError = document.getElementById('nameError');
+const emojiButtons = document.querySelectorAll('.emoji-btn');
 
 const welcomeMessage = document.getElementById('welcomeMessage');
-const canvas = document.getElementById('interactivePrism');
-const ctx = canvas.getContext('2d');
+const progressIndicator = document.getElementById('progressIndicator');
 
 const questionText = document.getElementById('questionText');
 const optionsArea = document.getElementById('optionsArea');
 const scoreDisplay = document.getElementById('score');
 const nextButton = document.getElementById('nextButton');
 const explanationText = document.getElementById('explanationText');
+const confettiContainer = document.getElementById('confetti');
 
 const finalMessage = document.getElementById('finalMessage');
 const trophyContainer = document.getElementById('trophyContainer');
@@ -25,6 +26,7 @@ const clearScoresButton = document.getElementById('clearScoresButton');
 
 // Variáveis do estado do jogo
 let currentStudentName = '';
+let currentStudentEmoji = '';
 let currentScore = 0;
 let currentQuestionIndex = 0;
 let questions = [];
@@ -35,10 +37,10 @@ function loadQuestions() {
     // Banco de perguntas maior para variedade
     const allQuestions = [
         {
-            question: "If someone says 'I'm knackered', what do they mean?",
+            question: "If someone says 'I'm beat', what do they mean?",
             options: ["They are very happy.", "They are very tired.", "They are very hungry.", "They are very excited."],
             answer: "They are very tired.",
-            explanation: "'Knackered' é uma gíria britânica para 'extremamente cansado'."
+            explanation: "'I'm beat' é uma expressão americana comum para 'estou muito cansado'."
         },
         {
             question: "What's a common way to respond to 'What have you been up to lately?'",
@@ -157,95 +159,31 @@ function loadQuestions() {
     ];
 
     // Embaralhar e selecionar apenas as perguntas necessárias
-    const shuffled = allQuestions.sort(() => 0.5 - Math.random());
+    const shuffled = [...allQuestions].sort(() => Math.random() - 0.5);
     questions = shuffled.slice(0, TOTAL_QUESTIONS_TO_ASK);
     currentQuestionIndex = 0;
 }
 
-// --- Prisma Canvas Drawing ---
-function drawPrism(questionNumber) {
-    // Limpar canvas
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+// --- Confetti Animation ---
+function createConfetti() {
+    confettiContainer.innerHTML = '';
     
-    // Configurações do prisma
-    const centerX = canvas.width / 2;
-    const centerY = canvas.height / 2;
-    const size = 60;
+    const colors = ['#f39c12', '#e74c3c', '#3498db', '#2ecc71', '#9b59b6', '#f1c40f'];
     
-    // Cor que muda baseada na pergunta atual
-    const hue = (questionNumber * 36) % 360; // Muda a cor a cada pergunta
-    const lightness = 50 + (questionNumber * 5) % 30; // Varia a luminosidade
+    for (let i = 0; i < 50; i++) {
+        const confettiPiece = document.createElement('div');
+        confettiPiece.className = 'confetti-piece';
+        confettiPiece.style.left = Math.random() * 100 + '%';
+        confettiPiece.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+        confettiPiece.style.animationDelay = Math.random() * 3 + 's';
+        confettiPiece.style.animationDuration = (Math.random() * 3 + 2) + 's';
+        confettiContainer.appendChild(confettiPiece);
+    }
     
-    // Desenhar prisma triangular
-    ctx.save();
-    
-    // Face frontal do prisma
-    ctx.fillStyle = `hsl(${hue}, 70%, ${lightness}%)`;
-    ctx.beginPath();
-    ctx.moveTo(centerX, centerY - size);
-    ctx.lineTo(centerX - size, centerY + size);
-    ctx.lineTo(centerX + size, centerY + size);
-    ctx.closePath();
-    ctx.fill();
-    
-    // Face lateral direita (mais escura)
-    ctx.fillStyle = `hsl(${hue}, 70%, ${lightness - 15}%)`;
-    ctx.beginPath();
-    ctx.moveTo(centerX + size, centerY + size);
-    ctx.lineTo(centerX + size + 30, centerY + size - 30);
-    ctx.lineTo(centerX + 30, centerY - size - 30);
-    ctx.lineTo(centerX, centerY - size);
-    ctx.closePath();
-    ctx.fill();
-    
-    // Face superior (mais clara)
-    ctx.fillStyle = `hsl(${hue}, 70%, ${lightness + 10}%)`;
-    ctx.beginPath();
-    ctx.moveTo(centerX, centerY - size);
-    ctx.lineTo(centerX + 30, centerY - size - 30);
-    ctx.lineTo(centerX - size + 30, centerY + size - 30);
-    ctx.lineTo(centerX - size, centerY + size);
-    ctx.closePath();
-    ctx.fill();
-    
-    // Contornos
-    ctx.strokeStyle = `hsl(${hue}, 70%, ${lightness - 25}%)`;
-    ctx.lineWidth = 2;
-    
-    // Contorno da face frontal
-    ctx.beginPath();
-    ctx.moveTo(centerX, centerY - size);
-    ctx.lineTo(centerX - size, centerY + size);
-    ctx.lineTo(centerX + size, centerY + size);
-    ctx.closePath();
-    ctx.stroke();
-    
-    // Linhas das arestas
-    ctx.beginPath();
-    ctx.moveTo(centerX, centerY - size);
-    ctx.lineTo(centerX + 30, centerY - size - 30);
-    ctx.moveTo(centerX + size, centerY + size);
-    ctx.lineTo(centerX + size + 30, centerY + size - 30);
-    ctx.moveTo(centerX - size, centerY + size);
-    ctx.lineTo(centerX - size + 30, centerY + size - 30);
-    ctx.stroke();
-    
-    // Número da pergunta no centro
-    ctx.fillStyle = 'white';
-    ctx.font = 'bold 16px Inter';
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-    ctx.fillText((questionNumber + 1).toString(), centerX - 10, centerY + 10);
-    
-    ctx.restore();
-    
-    // Adicionar efeito de rotação sutil
-    const angle = (questionNumber * 0.1) % (2 * Math.PI);
-    ctx.save();
-    ctx.translate(centerX, centerY);
-    ctx.rotate(angle);
-    ctx.translate(-centerX, -centerY);
-    ctx.restore();
+    // Remove confetti after animation
+    setTimeout(() => {
+        confettiContainer.innerHTML = '';
+    }, 4000);
 }
 
 // --- Event Listeners ---
@@ -253,6 +191,17 @@ startButton.addEventListener('click', startQuiz);
 nextButton.addEventListener('click', nextQuestion);
 restartButton.addEventListener('click', restartQuiz);
 clearScoresButton.addEventListener('click', clearScores);
+
+// Emoji selection
+emojiButtons.forEach(button => {
+    button.addEventListener('click', function() {
+        // Remove selection from all buttons
+        emojiButtons.forEach(btn => btn.classList.remove('selected'));
+        // Add selection to clicked button
+        this.classList.add('selected');
+        currentStudentEmoji = this.dataset.emoji;
+    });
+});
 
 // Permitir iniciar com Enter na tela de registro
 studentNameInput.addEventListener('keypress', function(event) {
@@ -264,7 +213,7 @@ studentNameInput.addEventListener('keypress', function(event) {
 // --- Funções principais ---
 function startQuiz() {
     const name = studentNameInput.value.trim();
-    if (name === '') {
+    if (name === '' || currentStudentEmoji === '') {
         nameError.classList.remove('hidden');
         return;
     }
@@ -279,7 +228,7 @@ function startQuiz() {
     registrationScreen.classList.add('hidden');
     quizScreen.classList.remove('hidden');
     
-    welcomeMessage.textContent = `Olá, ${currentStudentName}! Boa sorte!`;
+    welcomeMessage.textContent = `${currentStudentEmoji} ${currentStudentName}`;
     
     showQuestion();
 }
@@ -292,8 +241,8 @@ function showQuestion() {
     
     const question = questions[currentQuestionIndex];
     
-    // Atualizar prisma
-    drawPrism(currentQuestionIndex);
+    // Atualizar indicador de progresso
+    progressIndicator.textContent = `${currentQuestionIndex + 1}/${TOTAL_QUESTIONS_TO_ASK}`;
     
     // Mostrar pergunta
     questionText.textContent = question.question;
