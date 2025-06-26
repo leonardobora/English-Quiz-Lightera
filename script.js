@@ -66,11 +66,18 @@ const closeEnemMenu = document.getElementById('closeEnemMenu');
 const pauseEnemQuiz = document.getElementById('pauseEnemQuiz');
 const restartEnemQuizFromMenu = document.getElementById('restartEnemQuizFromMenu');
 const backToMainFromMenu = document.getElementById('backToMainFromMenu');
-const expandTextButton = document.getElementById('expandTextButton');
 
-// ENEM State Variables
-let isEnemTextExpanded = false;
+// Normal Quiz Menu Elements
+const normalMenuButton = document.getElementById('normalMenuButton');
+const normalMenuModal = document.getElementById('normalMenuModal');
+const closeNormalMenu = document.getElementById('closeNormalMenu');
+const pauseNormalQuiz = document.getElementById('pauseNormalQuiz');
+const restartNormalQuizFromMenu = document.getElementById('restartNormalQuizFromMenu');
+const backToMainFromNormalMenu = document.getElementById('backToMainFromNormalMenu');
+
+// State Variables
 let isEnemPaused = false;
+let isNormalPaused = false;
 
 // Variáveis do estado do jogo
 let currentStudentName = '';
@@ -285,9 +292,7 @@ function showEnemQuestion() {
     enemQuestionText.textContent = `(ENEM ${question.year}) ${question.text}`;
     enemProgressIndicator.textContent = `Questão ${enemCurrentQuestionIndex + 1}/${ENEM_TOTAL_QUESTIONS}`;
     
-    // Reset text expansion state
-    isEnemTextExpanded = false;
-    updateTextExpansion();
+    // Reset any overlay states if needed
     
     // Hide translation and explanation
     enemTranslationText.classList.add('hidden');
@@ -585,37 +590,76 @@ function backToMain() {
     registrationScreen.classList.remove('hidden');
 }
 
-// --- New ENEM Functions ---
+// --- Menu Functions ---
 
-// Text expansion functionality
-function updateTextExpansion() {
-    const questionSection = document.querySelector('#enemQuizScreen .question-section');
-    const questionText = enemQuestionText;
+// Normal Quiz Menu functionality
+function openNormalMenu() {
+    normalMenuModal.classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+}
+
+function closeNormalMenuModal() {
+    normalMenuModal.classList.add('hidden');
+    document.body.style.overflow = 'auto';
+}
+
+function pauseNormalQuizFunction() {
+    isNormalPaused = !isNormalPaused;
     
-    if (isEnemTextExpanded) {
-        questionSection.classList.add('expanded');
-        questionText.classList.remove('collapsed');
-        expandTextButton.textContent = '❌ Fechar Expansão';
-        expandTextButton.style.background = 'linear-gradient(135deg, #dc2626, #ef4444)';
-        document.body.style.overflow = 'hidden';
+    if (isNormalPaused) {
+        // Disable all quiz interactions
+        const optionButtons = optionsArea.querySelectorAll('.option-btn');
+        optionButtons.forEach(btn => btn.disabled = true);
+        nextButton.disabled = true;
+        pauseNormalQuiz.textContent = '▶️ Continuar Quiz';
+        
+        // Show pause overlay
+        showNormalPauseOverlay();
     } else {
-        questionSection.classList.remove('expanded');
-        questionText.classList.add('collapsed');
-        expandTextButton.textContent = '📖 Expandir Texto';
-        expandTextButton.style.background = 'linear-gradient(135deg, #059669, #10b981)';
-        document.body.style.overflow = 'auto';
+        // Re-enable quiz interactions
+        const optionButtons = optionsArea.querySelectorAll('.option-btn');
+        optionButtons.forEach(btn => btn.disabled = false);
+        nextButton.disabled = false;
+        pauseNormalQuiz.textContent = '⏸️ Pausar Quiz';
+        
+        // Hide pause overlay
+        hideNormalPauseOverlay();
+    }
+    
+    closeNormalMenuModal();
+}
+
+function showNormalPauseOverlay() {
+    const overlay = document.createElement('div');
+    overlay.id = 'normalPauseOverlay';
+    overlay.className = 'pause-overlay';
+    overlay.innerHTML = `
+        <div class="pause-content">
+            <h2>⏸️ Quiz Pausado</h2>
+            <p>Clique no menu para continuar</p>
+        </div>
+    `;
+    quizScreen.appendChild(overlay);
+}
+
+function hideNormalPauseOverlay() {
+    const overlay = document.getElementById('normalPauseOverlay');
+    if (overlay) {
+        overlay.remove();
     }
 }
 
-function toggleTextExpansion() {
-    isEnemTextExpanded = !isEnemTextExpanded;
-    updateTextExpansion();
+function confirmRestartNormalQuiz() {
+    if (confirm('Tem certeza que deseja reiniciar o quiz? Todo o progresso atual será perdido.')) {
+        closeNormalMenuModal();
+        restartQuiz();
+    }
 }
 
-// Close expansion when clicking outside
-function handleExpandedClick(event) {
-    if (isEnemTextExpanded && event.target.classList.contains('expanded')) {
-        toggleTextExpansion();
+function confirmBackToMainFromNormal() {
+    if (confirm('Tem certeza que deseja voltar ao menu principal? Todo o progresso atual será perdido.')) {
+        closeNormalMenuModal();
+        backToMain();
     }
 }
 
@@ -1082,23 +1126,36 @@ enemThumbsDown.addEventListener('click', function() {
     submitEnemFeedback('negative');
 });
 
-// New ENEM Menu Event Listeners
-enemMenuButton.addEventListener('click', openEnemMenu);
-closeEnemMenu.addEventListener('click', closeEnemMenuModal);
-expandTextButton.addEventListener('click', toggleTextExpansion);
-pauseEnemQuiz.addEventListener('click', pauseEnemQuizFunction);
-restartEnemQuizFromMenu.addEventListener('click', confirmRestartEnemQuiz);
-backToMainFromMenu.addEventListener('click', confirmBackToMain);
+// ENEM Menu Event Listeners
+if (enemMenuButton) enemMenuButton.addEventListener('click', openEnemMenu);
+if (closeEnemMenu) closeEnemMenu.addEventListener('click', closeEnemMenuModal);
+if (pauseEnemQuiz) pauseEnemQuiz.addEventListener('click', pauseEnemQuizFunction);
+if (restartEnemQuizFromMenu) restartEnemQuizFromMenu.addEventListener('click', confirmRestartEnemQuiz);
+if (backToMainFromMenu) backToMainFromMenu.addEventListener('click', confirmBackToMain);
 
-// Close menu when clicking outside
-enemMenuModal.addEventListener('click', function(e) {
-    if (e.target === enemMenuModal) {
-        closeEnemMenuModal();
-    }
-});
+// Normal Quiz Menu Event Listeners
+if (normalMenuButton) normalMenuButton.addEventListener('click', openNormalMenu);
+if (closeNormalMenu) closeNormalMenu.addEventListener('click', closeNormalMenuModal);
+if (pauseNormalQuiz) pauseNormalQuiz.addEventListener('click', pauseNormalQuizFunction);
+if (restartNormalQuizFromMenu) restartNormalQuizFromMenu.addEventListener('click', confirmRestartNormalQuiz);
+if (backToMainFromNormalMenu) backToMainFromNormalMenu.addEventListener('click', confirmBackToMainFromNormal);
 
-// Add click handler for expansion
-document.addEventListener('click', handleExpandedClick);
+// Close menus when clicking outside
+if (enemMenuModal) {
+    enemMenuModal.addEventListener('click', function(e) {
+        if (e.target === enemMenuModal) {
+            closeEnemMenuModal();
+        }
+    });
+}
+
+if (normalMenuModal) {
+    normalMenuModal.addEventListener('click', function(e) {
+        if (e.target === normalMenuModal) {
+            closeNormalMenuModal();
+        }
+    });
+}
 
 // Emoji selection
 emojiButtons.forEach(button => {
