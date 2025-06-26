@@ -33,6 +33,32 @@ const feedbackMessage = document.getElementById('feedbackMessage');
 const writtenFeedback = document.getElementById('writtenFeedback');
 const playAudioButton = document.getElementById('playAudioButton');
 
+// ENEM Extension Elements
+const enemExtensionButton = document.getElementById('enemExtensionButton');
+const enemQuizScreen = document.getElementById('enemQuizScreen');
+const enemFinalScoreScreen = document.getElementById('enemFinalScoreScreen');
+const enemQuestionText = document.getElementById('enemQuestionText');
+const enemOptionsArea = document.getElementById('enemOptionsArea');
+const enemNextButton = document.getElementById('enemNextButton');
+const enemScoreDisplay = document.getElementById('enemScore');
+const enemProgressIndicator = document.getElementById('enemProgressIndicator');
+const enemStudentNameDisplay = document.getElementById('enemStudentNameDisplay');
+const enemFinalStudentName = document.getElementById('enemFinalStudentName');
+const enemFinalScore = document.getElementById('enemFinalScore');
+const enemScoreMessage = document.getElementById('enemScoreMessage');
+const enemLeaderboard = document.getElementById('enemLeaderboard');
+const enemRestartButton = document.getElementById('enemRestartButton');
+const backToMainButton = document.getElementById('backToMainButton');
+const translateButton = document.getElementById('translateButton');
+const enemPlayAudioButton = document.getElementById('enemPlayAudioButton');
+const enemTranslationText = document.getElementById('enemTranslationText');
+const enemExplanationText = document.getElementById('enemExplanationText');
+const enemConfetti = document.getElementById('enemConfetti');
+const enemThumbsUp = document.getElementById('enemThumbsUp');
+const enemThumbsDown = document.getElementById('enemThumbsDown');
+const enemWrittenFeedback = document.getElementById('enemWrittenFeedback');
+const enemFeedbackMessage = document.getElementById('enemFeedbackMessage');
+
 // Variáveis do estado do jogo
 let currentStudentName = '';
 let currentStudentEmoji = '';
@@ -42,6 +68,172 @@ let questions = [];
 let currentAudio = null;
 let audioCache = new Map(); // Cache for audio files
 const TOTAL_QUESTIONS_TO_ASK = 10;
+
+// ENEM Extension Variables
+let enemQuestions = [];
+let enemCurrentQuestionIndex = 0;
+let enemCurrentScore = 0;
+let enemAudioCache = new Map();
+const ENEM_TOTAL_QUESTIONS = 10;
+
+// --- ENEM Questions Database ---
+function loadEnemQuestions() {
+    const allEnemQuestions = [
+        {
+            id: 1,
+            year: "2019",
+            text: "A pet is certainly a great friend. After a difficult day, pet owners quite literally feel the love.\n\nIn fact, for nearly 25 years, research has shown that living with pets provides certain health benefits. Pets help lower blood pressure and lessen anxiety. They boost our immunity. They can even help you get dates.\n\nAllergy Fighters: A growing number of studies have suggested that kids growing up in a home with \"furred animals\" will have less risk of allergies and asthma.\n\nDate magnets: Dogs are great for making love connections. Forget Internet matchmaking — a dog is a natural conversation starter.\n\nDogs for the Aged: Walking a dog or just caring for a pet — for elderly people who are able — can provide exercise and companionship.\n\nGood for Mind and Soul: Like any enjoyable activity, playing with a dog can elevate levels of serotonin and dopamine — nerve transmitters that are known to have pleasurable and calming properties.\n\nGood for the Heart: Heart attack patients who have pets survive longer than those without, according to several studies.\n\nDAVIS, J. L. Disponível em: www.webmd.com. Acesso em: 21 abr. 2013 (adaptado).\n\nAo discutir sobre a influência de animais de estimação no bem-estar do ser humano, a autora, a fim de fortalecer seus argumentos, utiliza palavras e expressões como research, a growing number of research e several studies com o objetivo de",
+            options: [
+                "a) mostrar que animais de estimação ajudam na cura de doenças como alergias e asma.",
+                "b) convencer sobre os benefícios da adoção de animais de estimação para a saúde.",
+                "c) fornecer dados sobre os impactos de animais de estimação nas relações amorosas.",
+                "d) explicar como o contato com animais de estimação pode prevenir ataques cardíacos.",
+                "e) esclarecer sobre o modo como idosos devem se relacionar com animais de estimação."
+            ],
+            correct: 1,
+            explanation: "A autora utiliza termos como 'research', 'a growing number of studies' e 'several studies' para dar credibilidade científica aos seus argumentos sobre os benefícios dos animais de estimação para a saúde humana.",
+            translation: "Um animal de estimação é certamente um grande amigo. Após um dia difícil, donos de animais literalmente sentem o amor. Na verdade, por quase 25 anos, pesquisas têm mostrado que viver com animais de estimação oferece certos benefícios à saúde..."
+        },
+        {
+            id: 2,
+            year: "2020",
+            text: "Finally, Aisha finished with her customer and asked what colour Ifemelu wanted for her hair attachments.\n\n\"Colour four.\"\n\n\"Not good colour,\" Aisha said promptly.\n\n\"That's what I use.\"\n\n\"It look dirty. You don't want colour one?\"\n\n\"Colour one it too black. It looks fake,\" Ifemelu said, loosening her headwrap. \"Sometimes I use colour two, but colour four is closest to my natural colour.\"\n\n[...]\n\nShe touched Ifemelu's hair. \"Why you don't have relaxer?\"\n\n\"I like my hair the way God made it.\"\n\n\"But how do you comb it? Hard to comb,\" Aisha said.\n\nIfemelu had brought her own comb. She gently combed her hair, dense, soft and tightly coiled, until it framed her head like a halo. \"It's not hard to comb if you moisturize it properly,\" she said, slipping into the coaxing tone of the proselytizer that she used whenever she was trying to convince other black women about the merits of wearing their hair natural. Aisha snorted; she clearly could not understand why anybody would choose to suffer through combing natural hair.\n\nADICHIE, C. Americanah: A novel. New York: Anchor Books, 2013.\n\nA passagem do romance da escritora nigeriana traz um diálogo entre duas mulheres negras: a cabeleireira, Aisha, e a cliente, Ifemelu. O posicionamento da cliente é sustentado por argumentos que",
+            options: [
+                "a) reforçam um padrão de beleza.",
+                "b) retratam um conflito de gerações.",
+                "c) revelam uma atitude de resistência.",
+                "d) demonstram uma postura de imaturidade.",
+                "e) evidenciam uma mudança de comportamento."
+            ],
+            correct: 2,
+            explanation: "Ifemelu demonstra resistência ao aceitar seu cabelo natural ('I like my hair the way God made it') e tenta convencer outras mulheres negras sobre os méritos de usar o cabelo natural, resistindo aos padrões impostos.",
+            translation: "Finalmente, Aisha terminou com sua cliente e perguntou que cor Ifemelu queria para suas extensões de cabelo. 'Cor quatro.' 'Cor não boa,' Aisha disse prontamente..."
+        },
+        {
+            id: 3,
+            year: "2018",
+            text: "TEXTO I – A Free World-class Education for Anyone Anywhere\n\nThe Khan Academy is an organization on a mission.\n\nWe're a not-for-profit with the goal of changing education for the better by providing a free world-class education to anyone anywhere. All of the site's resources are available to anyone. The Khan Academy's materials and resources are available to you completely free of charge.\n\nDisponível em www.khanacademy.org. Acesso em: 24 fev. 2012 (adaptado)\n\nTEXTO II\n\nI didn't have a problem with Khan Academy site until very recently. For me, the problem is the way Khan Academy is being promoted. The way the media sees it as \"revolutionizing education\". The way people with power and Money view education as simply \"sit-and-get\", i.e., teaching is telling and learning is listening, then Khan Academy is way more efficient than classroom lecturing. Khan Academy does it better. But TRUE progressive educators, TRUE education visionaries understand that education is a much more complex process...\n\nDisponível em http://fnoschese.wordpress.com. Acesso em: 2 mar. 2012\n\nCom o impacto das tecnologias e a ampliação das redes sociais, consumidores encontram na internet possibilidades de opinar sobre serviços oferecidos. Nesse sentido, o segundo texto, que é um comentário sobre o site divulgado no primeiro, apresenta a intenção do autor de",
+            options: [
+                "a) elogiar o trabalho proposto para a educação nessa era tecnológica.",
+                "b) reforçar como a mídia pode contribuir para revolucionar a educação.",
+                "c) chamar a atenção das pessoas influentes para o significado da educação.",
+                "d) destacar que o site tem melhores resultados do que a educação tradicional.",
+                "e) criticar a concepção de educação em que se baseia a organização."
+            ],
+            correct: 4,
+            explanation: "O autor do segundo texto critica a concepção simplista de educação da Khan Academy, argumentando que educação é um processo mais complexo do que apenas 'sit-and-get' (sentar e receber).",
+            translation: "TEXTO I - Uma Educação Gratuita de Classe Mundial para Qualquer Pessoa em Qualquer Lugar. A Khan Academy é uma organização em missão..."
+        },
+        {
+            id: 4,
+            year: "2018",
+            text: "Lava Mae: Creating Showers on Wheels for the Homeless\n\nSan Francisco, according to recent city numbers, has 4,300 people living on the streets. Among the many problems the homeless face is little or no access to showers. San Francisco only has about 16 to 20 shower stalls to accommodate them.\n\nBut Doniece Sandoval has made it her mission to change that. The 51-year-old former marketing executive started Lava Mae, a sort of showers on wheels, a new project that aims to turn decommissioned city buses into shower stations for the homeless. Each bus will have two shower stations and Sandoval expects that they'll be able to provide 2,000 showers a week.\n\nANDREANO, C. Disponível em: abcnews.go.com. Acesso: 26 jun. 2015 (adaptado).\n\nA relação dos vocábulos shower, bus e homeless, no texto, refere-se a",
+            options: [
+                "a) empregar moradores de rua em lava a jatos para ônibus.",
+                "b) criar acesso a banhos gratuitos para moradores de rua.",
+                "c) comissionar sem-teto para dirigir os ônibus da cidade.",
+                "d) exigir das autoridades que os ônibus municipais tenham banheiros.",
+                "e) abrigar dois mil moradores de rua em ônibus que foram adaptados."
+            ],
+            correct: 1,
+            explanation: "O texto fala sobre o projeto Lava Mae que transforma ônibus descomissionados em estações de banho para pessoas em situação de rua, criando acesso a banhos gratuitos.",
+            translation: "Lava Mae: Criando Chuveiros sobre Rodas para os Sem-Teto. São Francisco, de acordo com números recentes da cidade, tem 4.300 pessoas vivendo nas ruas..."
+        },
+        {
+            id: 5,
+            year: "2018",
+            text: "1984 (excerpt)\n\n'Is it your opinion, Winston, that the past has real existence?' [...] O'Brien smiled faintly. 'I will put it more precisely. Does the past exist concretely, in space? Is there somewhere or other a place, a world of solid objects, where the past is still happening?'\n\n'No.'\n\n'Then where does the past exist, if at all?'\n\n'In records. It is written down.'\n\n'In records. And — —?'\n\n'In the mind. In human memories.'\n\n'In memory. Very well, then. We, the Party, control all records, and we control all memories. Then we control the past, do we not?'\n\nORWELL. G, Nineteen Eighty-Four. New York: Signet Classics, 1977\n\nO romance 1984 descreve os perigos de um Estado totalitário. A ideia evidenciada nessa passagem é que o controle do Estado se dá por meio do(a)",
+            options: [
+                "a) boicote a ideais libertários.",
+                "b) veto ao culto das tradições.",
+                "c) poder sobre memórias e registros.",
+                "d) censura a produções orais e escritas.",
+                "e) manipulação de pensamentos individuais."
+            ],
+            correct: 2,
+            explanation: "O diálogo mostra que o Partido controla o passado através do controle de registros e memórias, demonstrando como o poder totalitário se estabelece controlando a narrativa histórica.",
+            translation: "1984 (trecho) - 'É sua opinião, Winston, que o passado tem existência real?' [...] O'Brien sorriu levemente. 'Vou colocar mais precisamente...'"
+        },
+        {
+            id: 6,
+            year: "2017",
+            text: "Israel Travel Guide\n\nIsrael has always been a standout destination. From the days of prophets to the modern day nomad this tiny slice of land on the eastern Mediterranean has long attracted visitors. While some arrive in the 'Holy Land' on a spiritual quest, many others are on cultural tours, beach holidays and eco-tourism trips. Weeding through Israel's convoluted history is both exhilarating and exhausting. There are crumbling temples, ruined cities, abandoned forts and hundreds of places associated with the great monotheistic religions.\n\nDisponível em: www.worldtravelguide.net. Acesso em: 15 jun. 2012.\n\nAntes de viajar, turistas geralmente buscam informações sobre o local para onde pretendem ir. O trecho do guia de viagens de Israel",
+            options: [
+                "a) descreve a história desse local para que turistas valorizem seus costumes milenares.",
+                "b) informa hábitos religiosos para auxiliar turistas a entenderem as diferenças culturais.",
+                "c) divulga os principais pontos turísticos para ajudar turistas a planejarem sua viagem.",
+                "d) recomenda medidas de segurança para alertar turistas sobre possíveis riscos locais.",
+                "e) apresenta aspectos gerais da cultura do país para continuar a atrair turistas estrangeiros."
+            ],
+            correct: 4,
+            explanation: "O guia apresenta aspectos gerais de Israel (história, religião, turismo) de forma atrativa para continuar atraindo turistas estrangeiros, destacando a diversidade de experiências disponíveis.",
+            translation: "Guia de Viagem de Israel. Israel sempre foi um destino de destaque. Desde os dias dos profetas até o nômade moderno, esta pequena fatia de terra no Mediterrâneo oriental há muito atrai visitantes..."
+        },
+        {
+            id: 7,
+            year: "2017",
+            text: "Take your car just anyplace for an oil change, and you may regret it down the road.\n\n[Image shows a car-shaped oil spill on pavement next to an oil can]\n\nReader's Digest, set. 1993.\n\nNesse texto publicitário são utilizados recursos verbais e não verbais para transmitir a mensagem. Ao associar os termos anyplace e regret à imagem do texto, constata-se que o tema da propaganda é a importância da",
+            options: [
+                "a) preservação do meio ambiente.",
+                "b) manutenção do motor.",
+                "c) escolha da empresa certa.",
+                "d) consistência do produto.",
+                "e) conservação do carro."
+            ],
+            correct: 2,
+            explanation: "A propaganda associa 'anyplace' (qualquer lugar) com 'regret' (arrependimento) e mostra uma imagem de vazamento de óleo, enfatizando a importância de escolher a empresa certa para trocar o óleo.",
+            translation: "Leve seu carro a qualquer lugar para trocar o óleo, e você pode se arrepender no futuro."
+        },
+        {
+            id: 8,
+            year: "2020",
+            text: "[Image shows a woman's face with search suggestions appearing: 'women shouldn't', 'women shouldn't have rights', 'women shouldn't vote', 'women shouldn't work', 'women shouldn't box', and below: 'women shouldn't suffer from discrimination anymore']\n\nDisponível em: https://sites.psu.edu. Acesso em: 12 jun. 2018.\n\nOs recursos usados nesse pôster de divulgação de uma campanha levam o leitor a refletir sobre a necessidade de",
+            options: [
+                "a) criticar o tipo de tratamento dado à mulher.",
+                "b) rever o desempenho da mulher no trabalho.",
+                "c) questionar a sobrecarga de atribuições da mulher.",
+                "d) analisar as pesquisas acerca dos direitos da mulher.",
+                "e) censurar a mulher pelo uso de determinadas palavras."
+            ],
+            correct: 0,
+            explanation: "O pôster usa sugestões de busca negativas sobre mulheres para contrastar com a mensagem final, levando o leitor a criticar o tipo de tratamento discriminatório dado às mulheres.",
+            translation: "Mulheres não deveriam... [várias sugestões negativas] ...sofrer discriminação nunca mais."
+        },
+        {
+            id: 9,
+            year: "2017",
+            text: "Letters\n\nChildren and Guns\n\nPublished: May 7, 2013\n\nTo the Editor: Re \"Girl's Death by Gunshot Is Rejected as Symbol\" (news article, May 6)\n\nI find it abhorrent that the people of Burkesville, Ky., are not willing to learn a lesson from the tragic shooting of a 2-year-old girl by her 5-year-old brother. I am not judging their lifestyle of introducing guns to children at a young age, but I do feel that it's irresponsible not to practice basic safety with anything potentially lethal — guns, knives, fire and so on. How can anyone justify leaving guns lying around, unlocked and possibly loaded, in a home with two young children?\n\nEMILY LOUBATON\nBrooklyn, May 6, 2013\n\nDisponível em: www.nytimes.com. Acesso em: 10 maio 2013.\n\nNo que diz respeito à tragédia ocorrida em Burkesville, a autora da carta enviada ao The New York Times busca",
+            options: [
+                "a) reconhecer o acidente noticiado como um fato isolado.",
+                "b) responsabilizar o irmão da vítima pelo incidente ocorrido.",
+                "c) apresentar versão diferente da notícia publicada pelo jornal.",
+                "d) expor sua indignação com a negligência de portadores de armas.",
+                "e) reforçar a necessidade de proibição do uso de armas por crianças."
+            ],
+            correct: 3,
+            explanation: "A autora da carta expressa indignação ('I find it abhorrent') com a negligência das pessoas que deixam armas desprotegidas em casa com crianças pequenas.",
+            translation: "Cartas - Crianças e Armas. Para o Editor: Acho abominável que as pessoas de Burkesville, Kentucky, não estejam dispostas a aprender uma lição da trágica morte a tiros de uma menina de 2 anos por seu irmão de 5 anos..."
+        },
+        {
+            id: 10,
+            year: "2018",
+            text: "Don't write in English, they said,\n\nEnglish is not your mother tongue…\n\n…The language I speak\n\nBecomes mine, its distortions, its queerness\n\nAll mine, mine alone, it is half English, half\n\nIndian, funny perhaps, but it is honest,\n\nIt is as human as I am human…\n\n…It voices my joys, my longings my\n\nHopes…\n\n(Kamala Das, 1965:10)\n\nGARGESH, R. South Asian Englishes. In: KACHRU, B.B.; KACHRU, Y.; NELSON, C.L. (Eds.). The Handbook of World English. Singapore: Blackwell, 2006\n\nA poetisa Kamala Das, como muitos escritores indianos, escreve suas obras em inglês, apesar de essa não ser sua primeira língua. Nesses versos, ela",
+            options: [
+                "a) usa a língua inglesa como efeito humorístico.",
+                "b) recorre a vozes de vários escritores ingleses.",
+                "c) adverte sobre o uso distorcido da língua inglesa.",
+                "d) demonstra consciência de sua identidade linguística.",
+                "e) reconhece a incompreensão na sua maneira de falar inglês."
+            ],
+            correct: 3,
+            explanation: "A poetisa demonstra consciência de sua identidade linguística única, reconhecendo que sua versão do inglês ('half English, half Indian') é autêntica e expressa sua humanidade.",
+            translation: "Não escreva em inglês, eles disseram, inglês não é sua língua materna... A língua que eu falo se torna minha, suas distorções, sua estranheza, tudo meu..."
+        }
+    ];
+    
+    // Selecionar 10 questões aleatórias
+    enemQuestions = allEnemQuestions.sort(() => 0.5 - Math.random()).slice(0, ENEM_TOTAL_QUESTIONS);
+}
 
 // --- Perguntas ---
 function loadQuestions() {

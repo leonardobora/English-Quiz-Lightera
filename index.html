@@ -45,6 +45,7 @@
                 </div>
             </div>
             <button id="startButton" class="mt-4">Começar!</button>
+            <button id="enemExtensionButton" class="mt-3 btn-enem">📚 EXTENSÃO ENEM</button>
             <div id="nameError" class="text-red-500 text-sm mt-2 hidden">Por favor, insira seu nome e escolha um emoji.</div>
         </div>
 
@@ -108,6 +109,81 @@
             </ul>
             <button id="restartButton">Jogar Novamente</button>
             <button id="clearScoresButton" class="mt-2 bg-red-500 hover:bg-red-600">Limpar Ranking</button>
+        </div>
+
+        <!-- ENEM Extension Screen -->
+        <div id="enemQuizScreen" class="screen hidden">
+            <div class="quiz-header">
+                <img src="logo.jpeg" alt="Logo Teacher Leo" class="quiz-logo">
+                <h2 class="quiz-title">EXTENSÃO ENEM - English</h2>
+                <div class="quiz-info">
+                    <span id="enemWelcomeMessage">Olá, <span id="enemStudentNameDisplay"></span>!</span>
+                    <span id="enemProgressIndicator">Questão 1/10</span>
+                </div>
+            </div>
+            
+            <div class="question-container">
+                <div class="question-header">
+                    <h3 id="enemQuestionText">Carregando questão...</h3>
+                    <div class="question-controls">
+                        <button id="translateButton" class="btn-translate">🌐 Traduzir</button>
+                        <button id="enemPlayAudioButton" class="btn-audio">🔊</button>
+                    </div>
+                </div>
+                
+                <div id="enemTranslationText" class="translation-text hidden"></div>
+                
+                <div id="enemOptionsArea" class="options-container">
+                    <!-- Options will be populated by JavaScript -->
+                </div>
+                
+                <div class="quiz-controls">
+                    <div id="enemScoreDisplay" class="score-display">Pontuação: <span id="enemScore">0</span></div>
+                    <button id="enemNextButton" class="btn-next hidden">Próxima Questão</button>
+                </div>
+                
+                <div id="enemExplanationText" class="explanation hidden"></div>
+            </div>
+            
+            <div id="enemConfetti" class="confetti-container"></div>
+        </div>
+
+        <!-- ENEM Final Score Screen -->
+        <div id="enemFinalScoreScreen" class="screen hidden">
+            <div class="final-score-header">
+                <img src="logo.jpeg" alt="Logo Teacher Leo" class="quiz-logo">
+                <h2 class="quiz-title">EXTENSÃO ENEM - Resultado Final</h2>
+            </div>
+            
+            <div class="score-summary">
+                <h3>Parabéns, <span id="enemFinalStudentName"></span>!</h3>
+                <div class="final-score">
+                    <span id="enemFinalScore">0</span>/10
+                </div>
+                <div id="enemScoreMessage" class="score-message"></div>
+            </div>
+            
+            <div class="enem-feedback">
+                <h4>📝 Feedback ENEM</h4>
+                <p>Como foi sua experiência com questões estilo ENEM?</p>
+                <div class="feedback-buttons">
+                    <button id="enemThumbsUp" class="btn-feedback">👍</button>
+                    <button id="enemThumbsDown" class="btn-feedback">👎</button>
+                </div>
+                <textarea 
+                    id="enemWrittenFeedback" 
+                    rows="3" 
+                    placeholder="Compartilhe sua experiência com as questões ENEM..."
+                    class="w-full p-3 border border-slate-300 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 resize-none mt-3"
+                ></textarea>
+                <p id="enemFeedbackMessage" class="text-sm text-slate-600 mt-2 text-center hidden"></p>
+            </div>
+            
+            <h2>Ranking ENEM:</h2>
+            <ul id="enemLeaderboard" class="mb-6">
+            </ul>
+            <button id="enemRestartButton">Tentar Novamente</button>
+            <button id="backToMainButton" class="mt-2 bg-gray-500 hover:bg-gray-600">Voltar ao Menu Principal</button>
         </div>
     </div>
 
