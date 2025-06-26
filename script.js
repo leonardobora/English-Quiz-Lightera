@@ -394,12 +394,30 @@ function displayEnemLeaderboard() {
     scores.forEach((score, index) => {
         const li = document.createElement('li');
         li.className = 'leaderboard-item';
-        li.innerHTML = `
-            <span class="rank">${index + 1}º</span>
-            <span class="name">${score.emoji} ${score.name}</span>
-            <span class="score">${score.score}/10</span>
-            <span class="date">${score.date}</span>
-        `;
+        
+        // Create elements safely to prevent XSS
+        const rankSpan = document.createElement('span');
+        rankSpan.className = 'rank';
+        rankSpan.textContent = `${index + 1}º`;
+        
+        const nameSpan = document.createElement('span');
+        nameSpan.className = 'name';
+        nameSpan.textContent = `${score.emoji} ${score.name}`;
+        
+        const scoreSpan = document.createElement('span');
+        scoreSpan.className = 'score';
+        scoreSpan.textContent = `${score.score}/10`;
+        
+        const dateSpan = document.createElement('span');
+        dateSpan.className = 'date';
+        dateSpan.textContent = `${score.date}`;
+        
+        // Append all elements safely
+        li.appendChild(rankSpan);
+        li.appendChild(nameSpan);
+        li.appendChild(scoreSpan);
+        li.appendChild(dateSpan);
+        
         enemLeaderboard.appendChild(li);
     });
 }
@@ -1418,12 +1436,28 @@ function displayLeaderboard() {
     scores.forEach((scoreData, index) => {
         const li = document.createElement('li');
         const emoji = scoreData.emoji || '😊'; // Fallback for old scores without emoji
-        li.innerHTML = `
-            <strong>#${index + 1}</strong> 
-            ${emoji} ${scoreData.name} - 
-            <strong>${scoreData.score}</strong> pontos 
-            <small>(${scoreData.date})</small>
-        `;
+        
+        // Create elements safely to prevent XSS
+        const rankElement = document.createElement('strong');
+        rankElement.textContent = `#${index + 1}`;
+        
+        const nameText = document.createTextNode(` ${emoji} ${scoreData.name} - `);
+        
+        const scoreElement = document.createElement('strong');
+        scoreElement.textContent = `${scoreData.score}`;
+        
+        const pointsText = document.createTextNode(' pontos ');
+        
+        const dateElement = document.createElement('small');
+        dateElement.textContent = `(${scoreData.date})`;
+        
+        // Append all elements safely
+        li.appendChild(rankElement);
+        li.appendChild(nameText);
+        li.appendChild(scoreElement);
+        li.appendChild(pointsText);
+        li.appendChild(dateElement);
+        
         leaderboardList.appendChild(li);
     });
 }
