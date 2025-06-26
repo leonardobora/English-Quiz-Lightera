@@ -22,7 +22,7 @@ const finalMessage = document.getElementById('finalMessage');
 const trophyContainer = document.getElementById('trophyContainer');
 const leaderboardList = document.getElementById('leaderboard');
 const restartButton = document.getElementById('restartButton');
-const clearScoresButton = document.getElementById('clearScoresButton');
+// Clear scores button removed as requested
 
 // ENEM notice and feedback elements
 const enemNotice = document.getElementById('enemNotice');
@@ -686,7 +686,7 @@ function confirmBackToMainFromNormal() {
     if (confirm('Tem certeza que deseja voltar ao menu principal? Todo o progresso atual será perdido.')) {
         closeNormalMenuModal();
         // Reset quiz state and return to registration
-        quizScreen.classList.add('hidden');
+        hideAllScreens();
         registrationScreen.classList.remove('hidden');
     }
 }
@@ -758,13 +758,6 @@ function confirmRestartEnemQuiz() {
     if (confirm('Tem certeza que deseja reiniciar o quiz ENEM? Todo o progresso atual será perdido.')) {
         closeEnemMenuModal();
         restartEnemQuiz();
-    }
-}
-
-function confirmBackToMain() {
-    if (confirm('Tem certeza que deseja voltar ao menu principal? Todo o progresso atual será perdido.')) {
-        closeEnemMenuModal();
-        backToMain();
     }
 }
 
@@ -1175,7 +1168,6 @@ async function generateSpeech(text) {
 startButton.addEventListener('click', startQuiz);
 nextButton.addEventListener('click', nextQuestion);
 restartButton.addEventListener('click', restartQuiz);
-clearScoresButton.addEventListener('click', clearScores);
 
 // ENEM notice close button
 closeNoticeButton.addEventListener('click', function() {
@@ -1517,12 +1509,7 @@ function clearAudioCache() {
     audioCache.clear();
 }
 
-function clearScores() {
-    if (confirm('Tem certeza que deseja limpar todo o ranking?')) {
-        localStorage.removeItem('prismaQuizScores');
-        displayLeaderboard();
-    }
-}
+// Clear scores function removed as requested
 
 // --- Feedback Functions ---
 function submitFeedback(type) {
