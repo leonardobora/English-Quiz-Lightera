@@ -59,6 +59,19 @@ const enemThumbsDown = document.getElementById('enemThumbsDown');
 const enemWrittenFeedback = document.getElementById('enemWrittenFeedback');
 const enemFeedbackMessage = document.getElementById('enemFeedbackMessage');
 
+// New ENEM Menu Elements
+const enemMenuButton = document.getElementById('enemMenuButton');
+const enemMenuModal = document.getElementById('enemMenuModal');
+const closeEnemMenu = document.getElementById('closeEnemMenu');
+const pauseEnemQuiz = document.getElementById('pauseEnemQuiz');
+const restartEnemQuizFromMenu = document.getElementById('restartEnemQuizFromMenu');
+const backToMainFromMenu = document.getElementById('backToMainFromMenu');
+const expandTextButton = document.getElementById('expandTextButton');
+
+// ENEM State Variables
+let isEnemTextExpanded = false;
+let isEnemPaused = false;
+
 // Variáveis do estado do jogo
 let currentStudentName = '';
 let currentStudentEmoji = '';
@@ -271,6 +284,10 @@ function showEnemQuestion() {
     // Update question display
     enemQuestionText.textContent = `(ENEM ${question.year}) ${question.text}`;
     enemProgressIndicator.textContent = `Questão ${enemCurrentQuestionIndex + 1}/${ENEM_TOTAL_QUESTIONS}`;
+    
+    // Reset text expansion state
+    isEnemTextExpanded = false;
+    updateTextExpansion();
     
     // Hide translation and explanation
     enemTranslationText.classList.add('hidden');
@@ -566,6 +583,100 @@ function backToMain() {
     // Return to main menu
     enemFinalScoreScreen.classList.add('hidden');
     registrationScreen.classList.remove('hidden');
+}
+
+// --- New ENEM Functions ---
+
+// Text expansion functionality
+function updateTextExpansion() {
+    const questionSection = document.querySelector('#enemQuizScreen .question-section');
+    const questionText = enemQuestionText;
+    
+    if (isEnemTextExpanded) {
+        questionSection.classList.add('expanded');
+        questionText.classList.remove('collapsed');
+        expandTextButton.textContent = '📄 Contrair Texto';
+    } else {
+        questionSection.classList.remove('expanded');
+        questionText.classList.add('collapsed');
+        expandTextButton.textContent = '📖 Expandir Texto';
+    }
+}
+
+function toggleTextExpansion() {
+    isEnemTextExpanded = !isEnemTextExpanded;
+    updateTextExpansion();
+}
+
+// Menu functionality
+function openEnemMenu() {
+    enemMenuModal.classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+}
+
+function closeEnemMenuModal() {
+    enemMenuModal.classList.add('hidden');
+    document.body.style.overflow = 'auto';
+}
+
+function pauseEnemQuizFunction() {
+    isEnemPaused = !isEnemPaused;
+    
+    if (isEnemPaused) {
+        // Disable all quiz interactions
+        const optionButtons = enemOptionsArea.querySelectorAll('.option-btn');
+        optionButtons.forEach(btn => btn.disabled = true);
+        enemNextButton.disabled = true;
+        pauseEnemQuiz.textContent = '▶️ Continuar Quiz';
+        
+        // Show pause overlay
+        showPauseOverlay();
+    } else {
+        // Re-enable quiz interactions
+        const optionButtons = enemOptionsArea.querySelectorAll('.option-btn');
+        optionButtons.forEach(btn => btn.disabled = false);
+        enemNextButton.disabled = false;
+        pauseEnemQuiz.textContent = '⏸️ Pausar Quiz';
+        
+        // Hide pause overlay
+        hidePauseOverlay();
+    }
+    
+    closeEnemMenuModal();
+}
+
+function showPauseOverlay() {
+    const overlay = document.createElement('div');
+    overlay.id = 'pauseOverlay';
+    overlay.className = 'pause-overlay';
+    overlay.innerHTML = `
+        <div class="pause-content">
+            <h2>⏸️ Quiz Pausado</h2>
+            <p>Clique no menu para continuar</p>
+        </div>
+    `;
+    enemQuizScreen.appendChild(overlay);
+}
+
+function hidePauseOverlay() {
+    const overlay = document.getElementById('pauseOverlay');
+    if (overlay) {
+        overlay.remove();
+    }
+}
+
+function confirmRestartEnemQuiz() {
+    if (confirm('Tem certeza que deseja reiniciar o quiz ENEM? Todo o progresso atual será perdido.')) {
+        closeEnemMenuModal();
+        restartEnemQuiz();
+    }
+}
+
+function confirmBackToMain() {
+    if (confirm('Tem certeza que deseja voltar ao menu principal? Todo o progresso atual será perdido.')) {
+        closeEnemMenuModal();
+        backToMain();
+    }
 }
 
 // --- Perguntas ---
@@ -958,6 +1069,21 @@ enemThumbsUp.addEventListener('click', function() {
 
 enemThumbsDown.addEventListener('click', function() {
     submitEnemFeedback('negative');
+});
+
+// New ENEM Menu Event Listeners
+enemMenuButton.addEventListener('click', openEnemMenu);
+closeEnemMenu.addEventListener('click', closeEnemMenuModal);
+expandTextButton.addEventListener('click', toggleTextExpansion);
+pauseEnemQuiz.addEventListener('click', pauseEnemQuizFunction);
+restartEnemQuizFromMenu.addEventListener('click', confirmRestartEnemQuiz);
+backToMainFromMenu.addEventListener('click', confirmBackToMain);
+
+// Close menu when clicking outside
+enemMenuModal.addEventListener('click', function(e) {
+    if (e.target === enemMenuModal) {
+        closeEnemMenuModal();
+    }
 });
 
 // Emoji selection

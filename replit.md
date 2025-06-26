@@ -45,6 +45,15 @@ An interactive English learning platform with Portuguese interface designed for 
 - Integrated feedback system specifically for ENEM quiz experience
 - Designed responsive UI with distinct ENEM branding and styling
 
+### January 26, 2025 - ENEM Enhanced Features (Evening Update)
+- Enhanced layout to handle long texts with expandable container (max-width: 1200px)
+- Implemented text expansion/contraction functionality for better readability
+- Added comprehensive menu system with pause, restart, and navigation options
+- Integrated user confirmation dialogs for destructive actions (restart/exit)
+- Added direct LinkedIn link for Leonardo feedback (linkedin.com/in/leonardobora)
+- Created pause overlay with visual feedback for interrupted sessions
+- Improved responsive design for optimal text display on all screen sizes
+
 ### Previous Updates
 - Implemented OpenAI text-to-speech integration with audio caching
 - Created database schema for scores, users, and feedback

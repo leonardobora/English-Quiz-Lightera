@@ -113,26 +113,33 @@
 
         <!-- ENEM Extension Screen -->
         <div id="enemQuizScreen" class="screen hidden">
-            <div class="logo-container">
-                <img src="logo.jpeg" alt="Logo Teacher Leo" class="main-logo">
-            </div>
-            <h1 class="main-title">EXTENSÃO ENEM - English</h1>
-            
-            <div class="quiz-header">
-                <div class="quiz-info">
-                    <span id="enemWelcomeMessage">Olá, <span id="enemStudentNameDisplay"></span>!</span>
-                    <span id="enemProgressIndicator">Questão 1/10</span>
+            <div class="enem-header">
+                <div class="header-content">
+                    <div class="logo-container">
+                        <img src="logo.jpeg" alt="Logo Teacher Leo" class="main-logo">
+                    </div>
+                    <h1 class="main-title">EXTENSÃO ENEM - English</h1>
+                    
+                    <div class="quiz-header">
+                        <div class="quiz-info">
+                            <span id="enemWelcomeMessage">Olá, <span id="enemStudentNameDisplay"></span>!</span>
+                            <span id="enemProgressIndicator">Questão 1/10</span>
+                        </div>
+                        <button id="enemMenuButton" class="menu-button">☰ Menu</button>
+                    </div>
                 </div>
             </div>
             
             <div class="question-section">
                 <div class="question-header">
-                    <div id="enemQuestionText" class="question-text">Carregando questão...</div>
                     <div class="question-controls">
+                        <button id="expandTextButton" class="btn-expand">📖 Expandir Texto</button>
                         <button id="translateButton" class="btn-translate">🌐 Traduzir</button>
                         <button id="enemPlayAudioButton" class="btn-audio">🔊</button>
                     </div>
                 </div>
+                
+                <div id="enemQuestionText" class="question-text">Carregando questão...</div>
                 
                 <div id="enemTranslationText" class="translation-text hidden"></div>
                 
@@ -146,6 +153,22 @@
                 </div>
                 
                 <div id="enemExplanationText" class="explanation hidden"></div>
+            </div>
+            
+            <!-- ENEM Menu Modal -->
+            <div id="enemMenuModal" class="menu-modal hidden">
+                <div class="menu-content">
+                    <div class="menu-header">
+                        <h3>Menu ENEM</h3>
+                        <button id="closeEnemMenu" class="close-menu">&times;</button>
+                    </div>
+                    <div class="menu-options">
+                        <button id="pauseEnemQuiz" class="menu-option">⏸️ Pausar Quiz</button>
+                        <button id="restartEnemQuizFromMenu" class="menu-option">🔄 Reiniciar Quiz</button>
+                        <button id="backToMainFromMenu" class="menu-option">🏠 Voltar ao Menu Principal</button>
+                        <a href="https://linkedin.com/in/leonardobora" target="_blank" class="menu-option linkedin-link">💼 Feedback para Leonardo</a>
+                    </div>
+                </div>
             </div>
             
             <div id="enemConfetti" class="confetti-container"></div>
