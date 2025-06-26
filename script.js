@@ -273,8 +273,10 @@ function startEnemQuiz() {
     enemStudentNameDisplay.textContent = currentStudentName;
     enemScoreDisplay.textContent = enemCurrentScore;
     
-    // Switch to ENEM quiz screen
-    registrationScreen.classList.add('hidden');
+    // Hide all screens first
+    hideAllScreens();
+    
+    // Show only the ENEM quiz screen
     enemQuizScreen.classList.remove('hidden');
     
     showEnemQuestion();
@@ -343,8 +345,8 @@ function nextEnemQuestion() {
 }
 
 function endEnemQuiz() {
-    // Hide quiz screen, show final score
-    enemQuizScreen.classList.add('hidden');
+    // Hide all screens and show ENEM final score screen
+    hideAllScreens();
     enemFinalScoreScreen.classList.remove('hidden');
     
     // Update final score display
@@ -603,8 +605,8 @@ function backToMain() {
     enemWrittenFeedback.value = '';
     enemFeedbackMessage.classList.add('hidden');
     
-    // Return to main menu
-    enemFinalScoreScreen.classList.add('hidden');
+    // Hide all screens and return to main menu
+    hideAllScreens();
     registrationScreen.classList.remove('hidden');
 }
 
@@ -1278,6 +1280,15 @@ studentNameInput.addEventListener('keypress', function(event) {
     }
 });
 
+// --- Utility Functions ---
+function hideAllScreens() {
+    registrationScreen.classList.add('hidden');
+    quizScreen.classList.add('hidden');
+    finalScoreScreen.classList.add('hidden');
+    enemQuizScreen.classList.add('hidden');
+    enemFinalScoreScreen.classList.add('hidden');
+}
+
 // --- Funções principais ---
 function startQuiz() {
     const name = studentNameInput.value.trim();
@@ -1292,8 +1303,10 @@ function startQuiz() {
     
     loadQuestions();
     
-    // Trocar para tela do quiz
-    registrationScreen.classList.add('hidden');
+    // Hide all screens first
+    hideAllScreens();
+    
+    // Show only the normal quiz screen
     quizScreen.classList.remove('hidden');
     
     welcomeMessage.textContent = `${currentStudentEmoji} ${currentStudentName}`;
@@ -1374,8 +1387,8 @@ function endQuiz() {
     // Salvar pontuação
     saveScore(currentStudentName, currentScore, currentStudentEmoji);
     
-    // Trocar para tela final
-    quizScreen.classList.add('hidden');
+    // Hide all screens and show final score screen
+    hideAllScreens();
     finalScoreScreen.classList.remove('hidden');
     
     // Confetti para pontuação alta (7+ corretas)
@@ -1487,8 +1500,8 @@ function restartQuiz() {
     writtenFeedback.value = '';
     feedbackMessage.classList.add('hidden');
     
-    // Voltar para tela de registro
-    finalScoreScreen.classList.add('hidden');
+    // Hide all screens and return to registration
+    hideAllScreens();
     registrationScreen.classList.remove('hidden');
     
     // Esconder mensagem de erro se estiver visível
