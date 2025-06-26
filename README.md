@@ -14,7 +14,9 @@ Uma plataforma interativa de aprendizado de inglês desenvolvida especialmente p
 
 ### 🎯 Missão Social
 
-Este projeto nasceu como uma iniciativa educacional dentro do programa **Lightera**, onde atuo como professor de inglês. O objetivo é democratizar o acesso ao ensino de inglês de qualidade, focando especificamente nas necessidades dos estudantes brasileiros que enfrentam o desafio do ENEM.
+Este projeto nasceu como uma iniciativa educacional dentro do programa social **"Formando Crianças para o Futuro"**, mantido pela Lightera (novo nome da Furukawa Electric). Como colaborador da equipe SPO e voluntário ativo neste programa há mais de um ano, desenvolvi esta plataforma para apoiar o ensino de inglês após ter ministrado aulas de português.
+
+O **Formando Crianças para o Futuro**, criado em 2004, já atendeu mais de 300 estudantes de escolas públicas da região de Curitiba, oferecendo novas oportunidades a crianças e adolescentes de comunidades carentes. Este projeto digital representa minha contribuição para expandir o impacto educacional do programa e retribuir à comunidade.
 
 > "A educação é a arma mais poderosa que você pode usar para mudar o mundo." - Nelson Mandela
 
@@ -103,10 +105,12 @@ O aplicativo estará disponível em `http://localhost:5000`
 
 ## 👨‍🏫 Sobre o Professor
 
-**Leonardo Bora** - Professor de Inglês na Lightera
-- 🎓 Especialista em preparação para ENEM e vestibulares
+**Leonardo Bora** - Colaborador SPO na Lightera (Furukawa Electric)
+- 🎓 Voluntário no programa "Formando Crianças para o Futuro" há mais de 1 ano
+- 📚 Professor de português e inglês no programa social da empresa
 - 💻 Desenvolvedor full-stack apaixonado por tecnologia educacional
-- 🌍 Defensor da democratização do ensino de inglês no Brasil
+- 🌍 Defensor da democratização do ensino de qualidade no Brasil
+- 🤝 Comprometido em retribuir à comunidade através da educação
 
 ### 📞 Contato e Redes Sociais
 
@@ -154,8 +158,10 @@ Este projeto está licenciado sob a Licença MIT - veja o arquivo [LICENSE](LICE
 
 ## 🙏 Agradecimentos
 
-- **Lightera** - Por proporcionar o ambiente para desenvolvimento deste projeto social
-- **Estudantes** - Por serem a inspiração e motivação deste trabalho
+- **Lightera (Furukawa Electric)** - Por manter o programa "Formando Crianças para o Futuro" e apoiar iniciativas voluntárias como esta
+- **Programa "Formando Crianças para o Futuro"** - Por ser uma plataforma de transformação social há mais de 20 anos
+- **Estudantes das comunidades atendidas** - Por serem a inspiração e motivação deste trabalho
+- **Equipe SPO e colegas voluntários** - Pelo apoio e colaboração no desenvolvimento de projetos educacionais
 - **Comunidade Open Source** - Por tornar projetos como este possíveis
 - **INEP/MEC** - Pelas questões autênticas do ENEM utilizadas com fins educacionais
 
@@ -163,7 +169,7 @@ Este projeto está licenciado sob a Licença MIT - veja o arquivo [LICENSE](LICE
 
 <div align="center">
   <p><strong>Desenvolvido com ❤️ para a educação brasileira</strong></p>
-  <p>Professor Leonardo Bora | Lightera Education Program</p>
+  <p>Professor Leonardo Bora | SPO Lightera (Furukawa Electric) | Programa "Formando Crianças para o Futuro"</p>
   
   [![LinkedIn](https://img.shields.io/badge/Conecte--se_no_LinkedIn-0077B5?style=flat&logo=linkedin)](https://linkedin.com/in/leonardobora)
 </div>
