@@ -488,34 +488,6 @@ button:active {
     margin: 20px 0;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
     transition: all 0.3s ease;
-    position: relative;
-}
-
-#enemQuizScreen .question-section.expanded {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 95vw;
-    max-width: 1400px;
-    height: 90vh;
-    max-height: none;
-    z-index: 1000;
-    overflow-y: auto;
-    margin: 0;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-}
-
-/* Overlay background when expanded */
-#enemQuizScreen .question-section.expanded::before {
-    content: "";
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    background: rgba(0, 0, 0, 0.8);
-    z-index: -1;
 }
 
 #enemQuizScreen .question-text {
@@ -527,56 +499,6 @@ button:active {
     overflow-wrap: break-word;
     margin-bottom: 20px;
     max-width: 100%;
-    transition: all 0.3s ease;
-}
-
-#enemQuizScreen .question-text.collapsed {
-    max-height: 250px;
-    overflow: hidden;
-    position: relative;
-}
-
-#enemQuizScreen .question-text.collapsed::after {
-    content: "";
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    height: 60px;
-    background: linear-gradient(transparent, white);
-    pointer-events: none;
-}
-
-#enemQuizScreen .question-section.expanded .question-text {
-    max-height: none;
-    font-size: 1.2rem;
-    line-height: 1.8;
-}
-
-#enemQuizScreen .question-section.expanded .question-text.collapsed::after {
-    display: none;
-}
-
-/* Close button for expanded view */
-#enemQuizScreen .question-section.expanded .question-header {
-    position: sticky;
-    top: 0;
-    background: white;
-    z-index: 10;
-    padding-bottom: 16px;
-    margin-bottom: 16px;
-    border-bottom: 2px solid #f1f5f9;
-}
-
-/* Enhanced button styling for expanded view */
-#enemQuizScreen .question-section.expanded .btn-expand {
-    background: linear-gradient(135deg, #dc2626, #ef4444);
-    font-size: 1rem;
-    padding: 12px 20px;
-}
-
-#enemQuizScreen .question-section.expanded .btn-expand:hover {
-    background: linear-gradient(135deg, #b91c1c, #dc2626);
 }
 
 @media (min-width: 768px) {
@@ -605,24 +527,7 @@ button:active {
     transform: translateY(-1px);
 }
 
-/* Expand Text Button */
-.btn-expand {
-    background: linear-gradient(135deg, #059669, #10b981);
-    color: white;
-    border: none;
-    border-radius: 12px;
-    padding: 8px 16px;
-    font-size: 0.9rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    margin-right: 8px;
-}
 
-.btn-expand:hover {
-    background: linear-gradient(135deg, #047857, #059669);
-    transform: translateY(-1px);
-}
 
 /* Menu Modal */
 .menu-modal {

@@ -44,7 +44,7 @@
                     <button type="button" class="emoji-btn text-2xl p-2 border-2 border-transparent rounded-lg hover:border-blue-400" data-emoji="💎">💎</button>
                 </div>
             </div>
-            <button id="startButton" class="mt-4">Começar!</button>
+            <button id="startButton" class="mt-4 btn-primary">🎯 Começar Quiz!</button>
             <button id="enemExtensionButton" class="mt-3 btn-enem">📚 EXTENSÃO ENEM</button>
             <div id="nameError" class="text-red-500 text-sm mt-2 hidden">Por favor, insira seu nome e escolha um emoji.</div>
         </div>
@@ -55,7 +55,12 @@
                     <img src="logo.jpeg" alt="Logo Teacher Leo" class="header-logo">
                     <h2 id="welcomeMessage" class="text-xl font-semibold"></h2>
                 </div>
-                <div id="progressIndicator" class="text-sm font-medium text-slate-600 bg-slate-100 px-3 py-1 rounded-full"></div>
+                <div class="header-center">
+                    <div id="progressIndicator" class="text-sm font-medium text-slate-600 bg-slate-100 px-3 py-1 rounded-full"></div>
+                </div>
+                <div class="header-right">
+                    <button id="normalMenuButton" class="menu-button">☰ Menu</button>
+                </div>
             </div>
             <div id="questionArea" class="mt-4">
                 <div class="question-container">
@@ -71,6 +76,22 @@
             <button id="nextButton" class="mt-4 hidden">Próxima Pergunta</button>
             <p id="explanationText" class="mt-3 text-sm text-slate-600 hidden"></p>
             <div id="confetti" class="confetti-container"></div>
+            
+            <!-- Normal Quiz Menu Modal -->
+            <div id="normalMenuModal" class="menu-modal hidden">
+                <div class="menu-content">
+                    <div class="menu-header">
+                        <h3>Menu Quiz</h3>
+                        <button id="closeNormalMenu" class="close-menu">&times;</button>
+                    </div>
+                    <div class="menu-options">
+                        <button id="pauseNormalQuiz" class="menu-option">⏸️ Pausar Quiz</button>
+                        <button id="restartNormalQuizFromMenu" class="menu-option">🔄 Reiniciar Quiz</button>
+                        <button id="backToMainFromNormalMenu" class="menu-option">🏠 Voltar ao Menu Principal</button>
+                        <a href="https://linkedin.com/in/leonardobora" target="_blank" class="menu-option linkedin-link">💼 Feedback para Leonardo</a>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <div id="finalScoreScreen" class="hidden">
@@ -132,7 +153,6 @@
             <div class="question-section">
                 <div class="question-header">
                     <div class="question-controls">
-                        <button id="expandTextButton" class="btn-expand">📖 Expandir Texto</button>
                         <button id="translateButton" class="btn-translate">🌐 Traduzir</button>
                         <button id="enemPlayAudioButton" class="btn-audio">🔊</button>
                     </div>
