@@ -113,18 +113,21 @@
 
         <!-- ENEM Extension Screen -->
         <div id="enemQuizScreen" class="screen hidden">
+            <div class="logo-container">
+                <img src="logo.jpeg" alt="Logo Teacher Leo" class="main-logo">
+            </div>
+            <h1 class="main-title">EXTENSÃO ENEM - English</h1>
+            
             <div class="quiz-header">
-                <img src="logo.jpeg" alt="Logo Teacher Leo" class="quiz-logo">
-                <h2 class="quiz-title">EXTENSÃO ENEM - English</h2>
                 <div class="quiz-info">
                     <span id="enemWelcomeMessage">Olá, <span id="enemStudentNameDisplay"></span>!</span>
                     <span id="enemProgressIndicator">Questão 1/10</span>
                 </div>
             </div>
             
-            <div class="question-container">
+            <div class="question-section">
                 <div class="question-header">
-                    <h3 id="enemQuestionText">Carregando questão...</h3>
+                    <div id="enemQuestionText" class="question-text">Carregando questão...</div>
                     <div class="question-controls">
                         <button id="translateButton" class="btn-translate">🌐 Traduzir</button>
                         <button id="enemPlayAudioButton" class="btn-audio">🔊</button>
@@ -150,10 +153,10 @@
 
         <!-- ENEM Final Score Screen -->
         <div id="enemFinalScoreScreen" class="screen hidden">
-            <div class="final-score-header">
-                <img src="logo.jpeg" alt="Logo Teacher Leo" class="quiz-logo">
-                <h2 class="quiz-title">EXTENSÃO ENEM - Resultado Final</h2>
+            <div class="logo-container">
+                <img src="logo.jpeg" alt="Logo Teacher Leo" class="main-logo">
             </div>
+            <h1 class="main-title">EXTENSÃO ENEM - Resultado Final</h1>
             
             <div class="score-summary">
                 <h3>Parabéns, <span id="enemFinalStudentName"></span>!</h3>
@@ -179,11 +182,16 @@
                 <p id="enemFeedbackMessage" class="text-sm text-slate-600 mt-2 text-center hidden"></p>
             </div>
             
-            <h2>Ranking ENEM:</h2>
-            <ul id="enemLeaderboard" class="mb-6">
-            </ul>
-            <button id="enemRestartButton">Tentar Novamente</button>
-            <button id="backToMainButton" class="mt-2 bg-gray-500 hover:bg-gray-600">Voltar ao Menu Principal</button>
+            <div class="leaderboard-section">
+                <h2>Ranking ENEM:</h2>
+                <ul id="enemLeaderboard" class="mb-6">
+                </ul>
+            </div>
+            
+            <div class="action-buttons">
+                <button id="enemRestartButton">Tentar Novamente</button>
+                <button id="backToMainButton">Voltar ao Menu Principal</button>
+            </div>
         </div>
     </div>
 
