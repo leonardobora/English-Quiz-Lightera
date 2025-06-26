@@ -659,6 +659,79 @@ function confirmRestartNormalQuiz() {
 function confirmBackToMainFromNormal() {
     if (confirm('Tem certeza que deseja voltar ao menu principal? Todo o progresso atual será perdido.')) {
         closeNormalMenuModal();
+        // Reset quiz state and return to registration
+        quizScreen.classList.add('hidden');
+        registrationScreen.classList.remove('hidden');
+    }
+}
+
+// ENEM Menu functionality
+function openEnemMenu() {
+    enemMenuModal.classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+}
+
+function closeEnemMenuModal() {
+    enemMenuModal.classList.add('hidden');
+    document.body.style.overflow = 'auto';
+}
+
+function pauseEnemQuizFunction() {
+    isEnemPaused = !isEnemPaused;
+    
+    if (isEnemPaused) {
+        // Disable all quiz interactions
+        const optionButtons = enemOptionsArea.querySelectorAll('.option-btn');
+        optionButtons.forEach(btn => btn.disabled = true);
+        enemNextButton.disabled = true;
+        pauseEnemQuiz.textContent = '▶️ Continuar Quiz';
+        
+        // Show pause overlay
+        showEnemPauseOverlay();
+    } else {
+        // Re-enable quiz interactions
+        const optionButtons = enemOptionsArea.querySelectorAll('.option-btn');
+        optionButtons.forEach(btn => btn.disabled = false);
+        enemNextButton.disabled = false;
+        pauseEnemQuiz.textContent = '⏸️ Pausar Quiz';
+        
+        // Hide pause overlay
+        hideEnemPauseOverlay();
+    }
+    
+    closeEnemMenuModal();
+}
+
+function showEnemPauseOverlay() {
+    const overlay = document.createElement('div');
+    overlay.id = 'enemPauseOverlay';
+    overlay.className = 'pause-overlay';
+    overlay.innerHTML = `
+        <div class="pause-content">
+            <h2>⏸️ Quiz Pausado</h2>
+            <p>Clique no menu para continuar</p>
+        </div>
+    `;
+    enemQuizScreen.appendChild(overlay);
+}
+
+function hideEnemPauseOverlay() {
+    const overlay = document.getElementById('enemPauseOverlay');
+    if (overlay) {
+        overlay.remove();
+    }
+}
+
+function confirmRestartEnemQuiz() {
+    if (confirm('Tem certeza que deseja reiniciar o quiz ENEM? Todo o progresso atual será perdido.')) {
+        closeEnemMenuModal();
+        restartEnemQuiz();
+    }
+}
+
+function confirmBackToMain() {
+    if (confirm('Tem certeza que deseja voltar ao menu principal? Todo o progresso atual será perdido.')) {
+        closeEnemMenuModal();
         backToMain();
     }
 }
