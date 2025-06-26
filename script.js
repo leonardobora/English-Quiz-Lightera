@@ -235,6 +235,339 @@ function loadEnemQuestions() {
     enemQuestions = allEnemQuestions.sort(() => 0.5 - Math.random()).slice(0, ENEM_TOTAL_QUESTIONS);
 }
 
+// --- ENEM Quiz Functions ---
+function startEnemQuiz() {
+    if (!currentStudentName.trim() || !currentStudentEmoji) {
+        nameError.classList.remove('hidden');
+        return;
+    }
+    
+    nameError.classList.add('hidden');
+    
+    // Initialize ENEM quiz
+    enemCurrentQuestionIndex = 0;
+    enemCurrentScore = 0;
+    loadEnemQuestions();
+    
+    // Update displays
+    enemStudentNameDisplay.textContent = currentStudentName;
+    enemScoreDisplay.textContent = enemCurrentScore;
+    
+    // Switch to ENEM quiz screen
+    registrationScreen.classList.add('hidden');
+    enemQuizScreen.classList.remove('hidden');
+    
+    showEnemQuestion();
+}
+
+function showEnemQuestion() {
+    if (enemCurrentQuestionIndex >= enemQuestions.length) {
+        endEnemQuiz();
+        return;
+    }
+    
+    const question = enemQuestions[enemCurrentQuestionIndex];
+    
+    // Update question display
+    enemQuestionText.textContent = `(ENEM ${question.year}) ${question.text}`;
+    enemProgressIndicator.textContent = `Questão ${enemCurrentQuestionIndex + 1}/${ENEM_TOTAL_QUESTIONS}`;
+    
+    // Hide translation and explanation
+    enemTranslationText.classList.add('hidden');
+    enemExplanationText.classList.add('hidden');
+    enemNextButton.classList.add('hidden');
+    
+    // Create options
+    enemOptionsArea.innerHTML = '';
+    question.options.forEach((option, index) => {
+        const optionButton = document.createElement('button');
+        optionButton.className = 'option-btn';
+        optionButton.textContent = option;
+        optionButton.onclick = () => selectEnemAnswer(index, optionButton);
+        enemOptionsArea.appendChild(optionButton);
+    });
+}
+
+function selectEnemAnswer(selectedIndex, selectedButton) {
+    const question = enemQuestions[enemCurrentQuestionIndex];
+    const isCorrect = selectedIndex === question.correct;
+    
+    // Disable all option buttons
+    const optionButtons = enemOptionsArea.querySelectorAll('.option-btn');
+    optionButtons.forEach(btn => btn.disabled = true);
+    
+    // Show correct/incorrect styling
+    if (isCorrect) {
+        selectedButton.classList.add('correct');
+        enemCurrentScore++;
+        enemScoreDisplay.textContent = enemCurrentScore;
+        createEnemConfetti();
+    } else {
+        selectedButton.classList.add('incorrect');
+        optionButtons[question.correct].classList.add('correct');
+    }
+    
+    // Show explanation
+    enemExplanationText.textContent = question.explanation;
+    enemExplanationText.classList.remove('hidden');
+    
+    // Show next button
+    enemNextButton.classList.remove('hidden');
+}
+
+function nextEnemQuestion() {
+    enemCurrentQuestionIndex++;
+    showEnemQuestion();
+}
+
+function endEnemQuiz() {
+    // Hide quiz screen, show final score
+    enemQuizScreen.classList.add('hidden');
+    enemFinalScoreScreen.classList.remove('hidden');
+    
+    // Update final score display
+    enemFinalStudentName.textContent = currentStudentName;
+    enemFinalScore.textContent = enemCurrentScore;
+    
+    // Score message
+    let message = '';
+    if (enemCurrentScore >= 8) {
+        message = `Excelente! ${currentStudentEmoji} Você está muito bem preparado para o ENEM!`;
+    } else if (enemCurrentScore >= 6) {
+        message = `Muito bom! ${currentStudentEmoji} Continue estudando para melhorar ainda mais!`;
+    } else if (enemCurrentScore >= 4) {
+        message = `Bom trabalho! ${currentStudentEmoji} Você está no caminho certo!`;
+    } else {
+        message = `Continue praticando! ${currentStudentEmoji} Cada questão é um aprendizado!`;
+    }
+    enemScoreMessage.textContent = message;
+    
+    // Save score
+    saveEnemScore(currentStudentName, enemCurrentScore, currentStudentEmoji);
+    displayEnemLeaderboard();
+}
+
+function saveEnemScore(name, score, emoji) {
+    let scores = JSON.parse(localStorage.getItem('enemQuizScores')) || [];
+    scores.push({
+        name: name,
+        score: score,
+        emoji: emoji,
+        date: new Date().toLocaleDateString('pt-BR')
+    });
+    
+    // Sort by score (descending)
+    scores.sort((a, b) => b.score - a.score);
+    
+    // Keep only top 10
+    scores = scores.slice(0, 10);
+    
+    localStorage.setItem('enemQuizScores', JSON.stringify(scores));
+}
+
+function displayEnemLeaderboard() {
+    const scores = JSON.parse(localStorage.getItem('enemQuizScores')) || [];
+    enemLeaderboard.innerHTML = '';
+    
+    scores.forEach((score, index) => {
+        const li = document.createElement('li');
+        li.className = 'leaderboard-item';
+        li.innerHTML = `
+            <span class="rank">${index + 1}º</span>
+            <span class="name">${score.emoji} ${score.name}</span>
+            <span class="score">${score.score}/10</span>
+            <span class="date">${score.date}</span>
+        `;
+        enemLeaderboard.appendChild(li);
+    });
+}
+
+function createEnemConfetti() {
+    const colors = ['#ff6b6b', '#4ecdc4', '#45b7d1', '#96ceb4', '#ffeaa7', '#dda0dd'];
+    
+    for (let i = 0; i < 50; i++) {
+        const confettiPiece = document.createElement('div');
+        confettiPiece.className = 'confetti-piece';
+        confettiPiece.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+        confettiPiece.style.left = Math.random() * 100 + '%';
+        confettiPiece.style.animationDelay = Math.random() * 2 + 's';
+        confettiPiece.style.animationDuration = (Math.random() * 3 + 2) + 's';
+        enemConfetti.appendChild(confettiPiece);
+    }
+    
+    setTimeout(() => {
+        enemConfetti.innerHTML = '';
+    }, 5000);
+}
+
+// Translation function
+async function translateText() {
+    const question = enemQuestions[enemCurrentQuestionIndex];
+    if (!question) return;
+    
+    // Show cached translation
+    enemTranslationText.textContent = question.translation;
+    enemTranslationText.classList.remove('hidden');
+    
+    translateButton.textContent = 'Traduzido ✓';
+    translateButton.disabled = true;
+    
+    setTimeout(() => {
+        translateButton.textContent = '🌐 Traduzir';
+        translateButton.disabled = false;
+    }, 3000);
+}
+
+// ENEM Audio function
+async function generateEnemSpeech(text) {
+    try {
+        // Check if audio is already cached
+        if (enemAudioCache.has(text)) {
+            const cachedAudioUrl = enemAudioCache.get(text);
+            
+            if (currentAudio) {
+                currentAudio.pause();
+            }
+            
+            currentAudio = new Audio(cachedAudioUrl);
+            currentAudio.play();
+            return;
+        }
+        
+        enemPlayAudioButton.disabled = true;
+        enemPlayAudioButton.textContent = '⏳';
+        
+        const response = await fetch('/api/tts', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ text: text })
+        });
+        
+        if (!response.ok) {
+            throw new Error('Failed to generate audio');
+        }
+        
+        const audioBlob = await response.blob();
+        const audioUrl = URL.createObjectURL(audioBlob);
+        
+        // Cache the audio URL
+        enemAudioCache.set(text, audioUrl);
+        
+        if (currentAudio) {
+            currentAudio.pause();
+        }
+        
+        currentAudio = new Audio(audioUrl);
+        currentAudio.play();
+        
+        currentAudio.onended = () => {
+            enemPlayAudioButton.disabled = false;
+            enemPlayAudioButton.textContent = '🔊';
+        };
+        
+    } catch (error) {
+        console.error('Error generating speech:', error);
+        enemPlayAudioButton.disabled = false;
+        enemPlayAudioButton.textContent = '🔊';
+        
+        // Fallback to browser's speech synthesis
+        if ('speechSynthesis' in window) {
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = 'en-US';
+            utterance.rate = 0.8;
+            speechSynthesis.speak(utterance);
+        }
+    }
+}
+
+function submitEnemFeedback(type) {
+    const writtenComment = enemWrittenFeedback.value.trim();
+    
+    // Save feedback
+    let feedback = JSON.parse(localStorage.getItem('enemQuizFeedback')) || [];
+    feedback.push({
+        type: type,
+        comment: writtenComment,
+        date: new Date().toLocaleDateString('pt-BR'),
+        student: currentStudentName,
+        emoji: currentStudentEmoji
+    });
+    localStorage.setItem('enemQuizFeedback', JSON.stringify(feedback));
+    
+    // Visual feedback
+    enemThumbsUp.classList.remove('selected');
+    enemThumbsDown.classList.remove('selected');
+    
+    if (type === 'positive') {
+        enemThumbsUp.classList.add('selected');
+        enemFeedbackMessage.textContent = 'Obrigado pelo feedback positivo! 😊';
+    } else {
+        enemThumbsDown.classList.add('selected');
+        enemFeedbackMessage.textContent = 'Obrigado pelo feedback! Vamos melhorar! 💪';
+    }
+    
+    enemFeedbackMessage.classList.remove('hidden');
+    
+    // Disable buttons and textarea
+    enemThumbsUp.disabled = true;
+    enemThumbsDown.disabled = true;
+    enemWrittenFeedback.disabled = true;
+}
+
+function restartEnemQuiz() {
+    // Reset ENEM quiz state
+    enemCurrentQuestionIndex = 0;
+    enemCurrentScore = 0;
+    
+    // Clear ENEM audio cache
+    for (const [text, audioUrl] of enemAudioCache) {
+        URL.revokeObjectURL(audioUrl);
+    }
+    enemAudioCache.clear();
+    
+    // Reset feedback
+    enemThumbsUp.classList.remove('selected');
+    enemThumbsDown.classList.remove('selected');
+    enemThumbsUp.disabled = false;
+    enemThumbsDown.disabled = false;
+    enemWrittenFeedback.disabled = false;
+    enemWrittenFeedback.value = '';
+    enemFeedbackMessage.classList.add('hidden');
+    
+    // Load new questions and restart
+    loadEnemQuestions();
+    enemFinalScoreScreen.classList.add('hidden');
+    enemQuizScreen.classList.remove('hidden');
+    showEnemQuestion();
+}
+
+function backToMain() {
+    // Reset states
+    enemCurrentQuestionIndex = 0;
+    enemCurrentScore = 0;
+    
+    // Clear audio cache
+    for (const [text, audioUrl] of enemAudioCache) {
+        URL.revokeObjectURL(audioUrl);
+    }
+    enemAudioCache.clear();
+    
+    // Reset feedback
+    enemThumbsUp.classList.remove('selected');
+    enemThumbsDown.classList.remove('selected');
+    enemThumbsUp.disabled = false;
+    enemThumbsDown.disabled = false;
+    enemWrittenFeedback.disabled = false;
+    enemWrittenFeedback.value = '';
+    enemFeedbackMessage.classList.add('hidden');
+    
+    // Return to main menu
+    enemFinalScoreScreen.classList.add('hidden');
+    registrationScreen.classList.remove('hidden');
+}
+
 // --- Perguntas ---
 function loadQuestions() {
     // Banco de perguntas maior para variedade
@@ -594,6 +927,37 @@ thumbsUpButton.addEventListener('click', function() {
 
 thumbsDownButton.addEventListener('click', function() {
     submitFeedback('negative');
+});
+
+// ENEM Extension Event Listeners
+enemExtensionButton.addEventListener('click', function() {
+    // Get current student info from main form
+    currentStudentName = studentNameInput.value.trim();
+    currentStudentEmoji = document.querySelector('.emoji-btn.selected')?.dataset.emoji || '';
+    
+    startEnemQuiz();
+});
+
+enemNextButton.addEventListener('click', nextEnemQuestion);
+enemRestartButton.addEventListener('click', restartEnemQuiz);
+backToMainButton.addEventListener('click', backToMain);
+
+translateButton.addEventListener('click', translateText);
+
+enemPlayAudioButton.addEventListener('click', function() {
+    const currentQuestion = enemQuestions[enemCurrentQuestionIndex];
+    if (currentQuestion) {
+        generateEnemSpeech(currentQuestion.text);
+    }
+});
+
+// ENEM Feedback buttons
+enemThumbsUp.addEventListener('click', function() {
+    submitEnemFeedback('positive');
+});
+
+enemThumbsDown.addEventListener('click', function() {
+    submitEnemFeedback('negative');
 });
 
 // Emoji selection
