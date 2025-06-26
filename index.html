@@ -62,19 +62,26 @@
                     <button id="normalMenuButton" class="menu-button">☰ Menu</button>
                 </div>
             </div>
-            <div id="questionArea" class="mt-4">
-                <div class="question-container">
-                    <p id="questionText" class="mb-4"></p>
-                    <button id="playAudioButton" class="audio-btn" title="Ouvir pergunta">
-                        🔊
-                    </button>
+            <div class="question-section">
+                <div class="question-header">
+                    <div class="question-controls">
+                        <button id="playAudioButton" class="btn-audio">🔊</button>
+                    </div>
                 </div>
-                <div id="optionsArea" class="space-y-2">
+                
+                <div id="questionText" class="question-text">Carregando questão...</div>
+                
+                <div id="optionsArea" class="options-container">
+                    <!-- Options will be populated by JavaScript -->
                 </div>
+                
+                <div class="quiz-controls">
+                    <div class="score-display">Pontuação: <span id="score">0</span></div>
+                    <button id="nextButton" class="btn-next hidden">➡️ Próxima Pergunta</button>
+                </div>
+                
+                <div id="explanationText" class="explanation hidden"></div>
             </div>
-            <p class="mt-6 text-lg">Pontuação: <span id="score" class="font-bold">0</span></p>
-            <button id="nextButton" class="mt-4 hidden">Próxima Pergunta</button>
-            <p id="explanationText" class="mt-3 text-sm text-slate-600 hidden"></p>
             <div id="confetti" class="confetti-container"></div>
             
             <!-- Normal Quiz Menu Modal -->

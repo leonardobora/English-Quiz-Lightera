@@ -636,10 +636,16 @@ function showNormalPauseOverlay() {
     overlay.innerHTML = `
         <div class="pause-content">
             <h2>⏸️ Quiz Pausado</h2>
-            <p>Clique no menu para continuar</p>
+            <p>Clique no botão abaixo para continuar</p>
+            <button id="resumeNormalQuizButton" class="resume-button">▶️ Continuar Quiz</button>
         </div>
     `;
     quizScreen.appendChild(overlay);
+    
+    // Add event listener to resume button
+    document.getElementById('resumeNormalQuizButton').addEventListener('click', function() {
+        pauseNormalQuizFunction();
+    });
 }
 
 function hideNormalPauseOverlay() {
@@ -709,10 +715,16 @@ function showEnemPauseOverlay() {
     overlay.innerHTML = `
         <div class="pause-content">
             <h2>⏸️ Quiz Pausado</h2>
-            <p>Clique no menu para continuar</p>
+            <p>Clique no botão abaixo para continuar</p>
+            <button id="resumeEnemQuizButton" class="resume-button">▶️ Continuar Quiz</button>
         </div>
     `;
     enemQuizScreen.appendChild(overlay);
+    
+    // Add event listener to resume button
+    document.getElementById('resumeEnemQuizButton').addEventListener('click', function() {
+        pauseEnemQuizFunction();
+    });
 }
 
 function hideEnemPauseOverlay() {
