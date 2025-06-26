@@ -595,17 +595,28 @@ function updateTextExpansion() {
     if (isEnemTextExpanded) {
         questionSection.classList.add('expanded');
         questionText.classList.remove('collapsed');
-        expandTextButton.textContent = '📄 Contrair Texto';
+        expandTextButton.textContent = '❌ Fechar Expansão';
+        expandTextButton.style.background = 'linear-gradient(135deg, #dc2626, #ef4444)';
+        document.body.style.overflow = 'hidden';
     } else {
         questionSection.classList.remove('expanded');
         questionText.classList.add('collapsed');
         expandTextButton.textContent = '📖 Expandir Texto';
+        expandTextButton.style.background = 'linear-gradient(135deg, #059669, #10b981)';
+        document.body.style.overflow = 'auto';
     }
 }
 
 function toggleTextExpansion() {
     isEnemTextExpanded = !isEnemTextExpanded;
     updateTextExpansion();
+}
+
+// Close expansion when clicking outside
+function handleExpandedClick(event) {
+    if (isEnemTextExpanded && event.target.classList.contains('expanded')) {
+        toggleTextExpansion();
+    }
 }
 
 // Menu functionality
@@ -1085,6 +1096,9 @@ enemMenuModal.addEventListener('click', function(e) {
         closeEnemMenuModal();
     }
 });
+
+// Add click handler for expansion
+document.addEventListener('click', handleExpandedClick);
 
 // Emoji selection
 emojiButtons.forEach(button => {
